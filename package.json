@@ -1,0 +1,22 @@
+{
+  "name": "iusis",
+  "version": "1.0.0",
+  "description": "iusis pdf creator",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facutk/iusis.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/facutk/iusis/issues"
+  },
+  "homepage": "https://github.com/facutk/iusis#readme",
+  "dependencies": {
+    "phantom": "^2.1.17"
+  }
+}
