@@ -9,7 +9,7 @@ var express = require('express'),
     fs = require('fs'),
     app = express();
 
-
+app.set('port', (process.env.PORT || 3000));
 
 app.get('/', function (req, res) {
     res.send('hola!');
@@ -52,6 +52,6 @@ app.get('/gen', function (req, res) {
 
 
 
-app.listen(3000, function(){
-    console.log('Listening on 3000');
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });
