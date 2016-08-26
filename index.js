@@ -43,27 +43,27 @@ phantom.create().then(ph => {
     return _ph.createPage();
 }).then(page => {
     _page = page;
-
     _page.paperSize = {
         format: 'A4',
         orientation: 'portrait',
         margin: '15cm'
     };
     _page.viewportSize = {
-        width: '100px',
-        height: '100px',
+        width: 100,
+        height: 100,
     };
+    _page.property('paperSize', {format: 'A4', orientation: 'portrait', margin: '1cm'});
+    _page.property('paperSize').then( function(content) {
+        console.log( content );
+    });
     //return _page.open('https://secret-sierra-35258.herokuapp.com/');
-    return _page.open('https://www.google.com/');
+    return _page.open('https://secret-sierra-35258.herokuapp.com/');
 }).then(status => {
-    //console.log(status);
-    //_page.set('paperSize', { format: 'A4', orientation: 'portrait', border: '1cm'});
-    console.log(_page.paperSize);
-
+    console.log(status);
     _page.render('page.pdf');
     return _page.property('content')
 }).then(content => {
-    //console.log(content);
+    console.log(content);
     _page.close();
     _ph.exit();
 }).catch(e => console.log(e));
