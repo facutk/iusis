@@ -4,7 +4,11 @@
   "description": "iusis pdf creator",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "webpack-dev-server": "webpack-dev-server --hot --inline --history-api-fallback",
+    "express-server": "nodemon server.js",
+    "dev": "concurrent --kill-others \"npm run webpack-dev-server\" \"npm run express-server\"",
+    "start": "node server.js",
+    "postinstall": "webpack -p --config webpack.production.js"
   },
   "repository": {
     "type": "git",
@@ -17,10 +21,37 @@
   },
   "homepage": "https://github.com/facutk/iusis#readme",
   "dependencies": {
-    "express": "^4.14.0",
+    "appcache-webpack-plugin": "^1.3.0",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-transform-class-properties": "^6.10.2",
+    "babel-plugin-transform-runtime": "^6.9.0",
+    "babel-polyfill": "^6.9.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-0": "^6.5.0",
+    "babel-register": "^6.9.0",
+    "babel-runtime": "^6.9.2",
+    "body-parser": "^1.15.2",
+    "cors": "^2.7.1",
+    "css-loader": "^0.23.1",
+    "express": "4.13.3",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "html-webpack-plugin": "^2.22.0",
     "imagemin": "^5.2.2",
     "imagemin-mozjpeg": "^6.0.0",
     "imagemin-pngquant": "^5.0.0",
-    "phantom": "^2.1.17"
+    "jspdf": "git://github.com/pavestru/jsPDF.git#v0.9.1",
+    "knex": "^0.11.7",
+    "node-uuid": "^1.4.7",
+    "pg": "^6.0.1",
+    "phantom": "^2.1.17",
+    "react": "^15.2.1",
+    "react-dom": "^15.2.1",
+    "react-dropzone": "^3.5.3",
+    "react-mdl": "^1.6.1",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.1"
   }
 }
