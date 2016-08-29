@@ -52,6 +52,7 @@
     "react-dropzone": "^3.5.3",
     "react-mdl": "^1.6.1",
     "react-redux": "^4.4.5",
+    "react-sortable": "^1.1.0",
     "redux": "^3.5.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.1"

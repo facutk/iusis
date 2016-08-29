@@ -1,6 +1,7 @@
 import React from 'react';
 import Dropzone from 'react-dropzone';
 import jsPDF from 'jspdf';
+import { Sortable } from 'react-sortable';
 
 const Header = function(props) {
     return (
@@ -10,22 +11,29 @@ const Header = function(props) {
 
 const ImagePreview = function(props) {
     return (
-        <li>{props.name} <button onClick={props.onClick}>X</button></li>
+        <div {...props}>{props.children}</div>
     );
 }
+
+const SortableImagePreview = Sortable(ImagePreview);
 
 const ImagePreviewList = function(props) {
     let fileList = props.files.map( (file, index) => {
         return (
-            <ImagePreview
+            <SortableImagePreview
                 key={index}
-                name={file.name}
-                onClick={props.handleRemove(file)}
-            />
+                sortId={index}
+                outline="list"
+                updateState={props.updateState}
+                draggingIndex={props.draggingIndex}
+                items={props.files}
+            >
+                {file.name} <button onClick={props.handleRemove(file)}>X</button>
+            </SortableImagePreview>
         );
     });
     return (
-        <ul>{fileList}</ul>
+        <div>{fileList}</div>
     );
 }
 
@@ -34,7 +42,8 @@ class PdfComposer extends React.Component {
         super(props, context);
         this.state = {
             display: '',
-            files: []
+            files: [],
+            draggingIndex: null
         };
     }
 
@@ -50,8 +59,11 @@ class PdfComposer extends React.Component {
         });
     }
 
+    updateState = (obj) => {
+        this.setState(obj);
+    }
+
     readImageUrl(url) {
-        console.log(url)
         return new Promise( (resolve, reject) => {
             let xhr = new XMLHttpRequest();
             xhr.responseType = 'blob';
@@ -70,7 +82,6 @@ class PdfComposer extends React.Component {
         });
     }
 
-
     genPDF = () => {
         var doc = new jsPDF();
         Promise.all( this.state.files.map( file => { return this.readImageUrl(file.preview) } ) )
@@ -85,6 +96,7 @@ class PdfComposer extends React.Component {
 
     handleImageRemove = (choice) => {
         return (evt) => {
+            window.URL.revokeObjectURL(choice.preview);
             this.setState({
                 files: this.state.files.filter( file => { return file.name != choice.name } )
             });
@@ -102,11 +114,13 @@ class PdfComposer extends React.Component {
                     accept="image/*">
                     <div>Arrastra imagenes, o hace click para formar el PDF.</div>
                 </Dropzone>
+                <button onClick={this.genPDF} disabled={this.state.files.length == 0}>Generar PDF</button>
                 <ImagePreviewList
                     files={this.state.files}
+                    draggingIndex={this.state.draggingIndex}
                     handleRemove={this.handleImageRemove}
+                    updateState={this.updateState}
                 />
-                <button onClick={this.genPDF} disabled={this.state.files.length == 0}>Generar PDF</button>
             </div>
         );
     }
