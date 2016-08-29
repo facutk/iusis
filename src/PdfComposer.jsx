@@ -31,6 +31,7 @@ class PdfComposer extends React.Component {
     }
 
     readImageUrl(url) {
+        console.log(url)
         return new Promise( (resolve, reject) => {
             let xhr = new XMLHttpRequest();
             xhr.responseType = 'blob';
@@ -52,9 +53,12 @@ class PdfComposer extends React.Component {
 
     genPDF = () => {
         var doc = new jsPDF();
-        //Promise.all().then();
-        this.readImageUrl(this.state.files[0].preview).then(dataUrl => {
-            doc.addImage(dataUrl, 'JPEG', 0, 0, 210, 297);
+        Promise.all( this.state.files.map( file => { return this.readImageUrl(file.preview) } ) )
+        .then(dataUrls => {
+            dataUrls.forEach( (dataUrl, index) => {
+                if (index) doc.addPage();
+                doc.addImage(dataUrl, 'JPEG', 0, 0, 210, 297);
+            })
             doc.save('Test.pdf');
         });
     }
@@ -71,7 +75,9 @@ class PdfComposer extends React.Component {
                 <Header
                     display={this.state.display}
                 />
-                <Dropzone onDrop={this.onFileDrop}>
+                <Dropzone
+                    onDrop={this.onFileDrop}
+                    accept="image/*">
                     <div>Arrastra imagenes, o hace click para formar el PDF.</div>
                 </Dropzone>
                 <ul>{fileList}</ul>
