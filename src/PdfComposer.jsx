@@ -8,6 +8,27 @@ const Header = function(props) {
     );
 }
 
+const ImagePreview = function(props) {
+    return (
+        <li>{props.name} <button onClick={props.onClick}>X</button></li>
+    );
+}
+
+const ImagePreviewList = function(props) {
+    let fileList = props.files.map( (file, index) => {
+        return (
+            <ImagePreview
+                key={index}
+                name={file.name}
+                onClick={props.handleRemove(file)}
+            />
+        );
+    });
+    return (
+        <ul>{fileList}</ul>
+    );
+}
+
 class PdfComposer extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -24,7 +45,6 @@ class PdfComposer extends React.Component {
     }
 
     onFileDrop = (files) => {
-        console.log('Received files: ', files);
         this.setState({
             files: this.state.files.concat(files)
         });
@@ -63,13 +83,15 @@ class PdfComposer extends React.Component {
         });
     }
 
-    render() {
-        let fileList = this.state.files.map( file => {
-            return (
-                <li>{file.name}</li>
-            );
-        });
+    handleImageRemove = (choice) => {
+        return (evt) => {
+            this.setState({
+                files: this.state.files.filter( file => { return file.name != choice.name } )
+            });
+        }
+    }
 
+    render() {
         return (
             <div>
                 <Header
@@ -80,8 +102,11 @@ class PdfComposer extends React.Component {
                     accept="image/*">
                     <div>Arrastra imagenes, o hace click para formar el PDF.</div>
                 </Dropzone>
-                <ul>{fileList}</ul>
-                <button onClick={this.genPDF}>Generar PDF</button>
+                <ImagePreviewList
+                    files={this.state.files}
+                    handleRemove={this.handleImageRemove}
+                />
+                <button onClick={this.genPDF} disabled={this.state.files.length == 0}>Generar PDF</button>
             </div>
         );
     }
