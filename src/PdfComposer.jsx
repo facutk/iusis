@@ -30,10 +30,33 @@ class PdfComposer extends React.Component {
         });
     }
 
+    readImageUrl(url) {
+        return new Promise( (resolve, reject) => {
+            let xhr = new XMLHttpRequest();
+            xhr.responseType = 'blob';
+
+            xhr.onload = function() {
+                let reader = new FileReader();
+                reader.onloadend = function() {
+                    resolve(reader.result);
+                }
+                reader.readAsDataURL(xhr.response);
+            };
+
+            xhr.onerror = () => reject(this);
+            xhr.open('GET', url);
+            xhr.send();
+        });
+    }
+
+
     genPDF = () => {
         var doc = new jsPDF();
-        doc.text(20, 20, this.state.files.length + ' archivos');
-        doc.save('Test.pdf');
+        //Promise.all().then();
+        this.readImageUrl(this.state.files[0].preview).then(dataUrl => {
+            doc.addImage(dataUrl, 'JPEG', 0, 0, 210, 297);
+            doc.save('Test.pdf');
+        });
     }
 
     render() {
