@@ -17,6 +17,10 @@ module.exports = {
             {
                 test: /\.css$/,
                 loader: "style-loader!css-loader"
+            },
+            {
+                test: /\.(png|jpg|ico)$/,
+                loader: 'file?name=[name].[hash].[ext]'
             }
         ]
     },
@@ -25,10 +29,16 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            filename: 'index.html',
             template: './src/index.template.ejs',
+            favicon: './src/favicon.ico',
+            filename: 'index.html',
             minify: {
                 "minifyCSS": true
+            }
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
             }
         }),
         new webpack.DefinePlugin({
