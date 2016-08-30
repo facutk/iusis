@@ -1,6 +1,9 @@
 const webpack = require('webpack');
+const path = require("path");
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 var AppCachePlugin = require('appcache-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: './src/client.jsx',
     output: {
@@ -16,18 +19,27 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: "style-loader!css-loader"
+                loader: ExtractTextPlugin.extract("style-loader", "css-loader")
             },
             {
                 test: /\.(png|jpg|ico)$/,
                 loader: 'file?name=[name].[hash].[ext]'
+            },
+            {
+                test: /\.(woff|woff2|eot|ttf|svg)$/,
+                loader: 'file-loader'
             }
         ]
     },
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['', '.js', '.jsx'],
+        alias: {
+            'semantic-ui': path.join(__dirname, "node_modules", "semantic-ui-css", "semantic.min.css"),
+        }
     },
     plugins: [
+        new CleanWebpackPlugin(['dist']),
+        new ExtractTextPlugin("styles.[hash].css"),
         new HtmlWebpackPlugin({
             template: './src/index.template.ejs',
             favicon: './src/favicon.ico',

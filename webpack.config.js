@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require("path");
 module.exports = {
     entry: './src/client.jsx',
     output: {
@@ -20,11 +21,18 @@ module.exports = {
             {
                 test: /\.(png|jpg|ico)$/,
                 loader: 'file?name=[name].[hash].[ext]'
+            },
+            {
+                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                loader: 'url-loader?limit=100000'
             }
         ]
     },
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['', '.js', '.jsx'],
+        alias: {
+            'semantic-ui': path.join(__dirname, "node_modules", "semantic-ui-css", "semantic.min.css"),
+        }
     },
     devServer: {
         host: 'localhost',

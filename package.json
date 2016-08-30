@@ -32,6 +32,7 @@
     "babel-register": "^6.9.0",
     "babel-runtime": "^6.9.2",
     "body-parser": "^1.15.2",
+    "clean-webpack-plugin": "^0.1.10",
     "cors": "^2.7.1",
     "css-loader": "^0.23.1",
     "express": "4.13.3",
@@ -54,7 +55,9 @@
     "react-redux": "^4.4.5",
     "react-sortable": "^1.1.0",
     "redux": "^3.5.2",
+    "semantic-ui-css": "^2.2.4",
     "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
     "webpack": "^1.13.1"
   }
 }
