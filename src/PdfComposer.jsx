@@ -4,7 +4,7 @@ import jsPDF from 'jspdf';
 import { Sortable } from 'react-sortable';
 
 
-const PreviewCard = function(props) {
+const PreviewContent = function(props) {
     return (
         <div className="ui centered card">
             <div className="image">
@@ -41,7 +41,7 @@ const ImagePreviewList = function(props) {
                 name={file.name}
             >
 
-                <PreviewCard
+                <PreviewContent
                     name={file.name}
                     preview={file.preview}
                     handleRemove={props.handleRemove(file)}
@@ -59,6 +59,7 @@ class PdfComposer extends React.Component {
         super(props, context);
         this.state = {
             files: [],
+            maxSize: '',
             draggingIndex: null
         };
     }
@@ -71,6 +72,12 @@ class PdfComposer extends React.Component {
 
     updateState = (obj) => {
         this.setState(obj);
+    }
+
+    handleMaxSize = (event) => {
+        this.setState({
+            maxSize: event.target.value
+        });
     }
 
     readImageUrl(url) {
@@ -93,14 +100,42 @@ class PdfComposer extends React.Component {
     }
 
     genPDF = () => {
-        var doc = new jsPDF();
-        Promise.all( this.state.files.map( file => { return this.readImageUrl(file.preview) } ) )
-        .then(dataUrls => {
-            dataUrls.forEach( (dataUrl, index) => {
-                if (index) doc.addPage();
-                doc.addImage(dataUrl, 'JPEG', 0, 0, 210, 297);
-            })
-            doc.save('Test.pdf');
+
+        // Split files in chunks
+        let fileGroups = [];
+        if (this.state.maxSize > 0) {
+            const maxSize = this.state.maxSize * 1024 * 1024;
+            let currentGroup = [];
+            const pdfOverHead = 10 * 1024;
+            let currentSize = pdfOverHead;
+
+            this.state.files.forEach( file => {
+                if ( (currentSize + file.size ) > maxSize) {
+                    fileGroups.push(currentGroup);
+                    currentGroup = [];
+                    currentSize = pdfOverHead;
+                }
+                currentSize += file.size;
+                currentGroup.push(file)
+            });
+            fileGroups.push(currentGroup);
+        } else {
+            fileGroups.push(this.state.files);
+        }
+
+        // render chunks
+        const dateNow = new Date();
+        fileGroups.forEach( (fileGroup, groupIndex) => {
+            Promise.all( fileGroup.map( file => { return this.readImageUrl(file.preview) } ) )
+            .then(dataUrls => {
+                let doc = new jsPDF();
+                dataUrls.forEach( (dataUrl, index) => {
+                    if (index) doc.addPage();
+                    doc.addImage(dataUrl, 'JPEG', 0, 0, 210, 297);
+                })
+                let filename = 'iusis' + '-' + dateNow.getTime() + '-' + groupIndex + '.pdf';
+                doc.save(filename);
+            });
         });
     }
 
@@ -121,13 +156,30 @@ class PdfComposer extends React.Component {
         return (
             <div>
                 <div className="ui centered card">
-                    <Dropzone
-                        style={dropzoneStyle}
-                        onDrop={this.onFileDrop}
-                        accept="image/*">
-                        <div>Arrastra imagenes, o hace click para formar el PDF.</div>
-                    </Dropzone>
-                    <button className="ui primary button" onClick={this.genPDF} disabled={this.state.files.length == 0}>Generar PDF</button>
+                    <div className="ui">
+                        <Dropzone
+                            style={dropzoneStyle}
+                            onDrop={this.onFileDrop}
+                            accept="image/*">
+                            <div>Arrastra imagenes, o hace click para formar el PDF.</div>
+                        </Dropzone>
+                    </div>
+                    <div className="content ui mini transparent input">
+                        <input
+                            type="number"
+                            name="quantity"
+                            min="1"
+                            placeholder="Tamaño máximo (Mb)"
+                            value={this.state.maxSize}
+                            onChange={this.handleMaxSize}
+                        />
+                    </div>
+                    <button
+                        className="ui primary button"
+                        onClick={this.genPDF}
+                        disabled={this.state.files.length == 0}>
+                        Generar PDF
+                    </button>
                 </div>
                 <ImagePreviewList
                     files={this.state.files}
