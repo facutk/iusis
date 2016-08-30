@@ -3,9 +3,20 @@ import Dropzone from 'react-dropzone';
 import jsPDF from 'jspdf';
 import { Sortable } from 'react-sortable';
 
-const Header = function(props) {
+
+const PreviewCard = function(props) {
     return (
-        <h1>{props.display}</h1>
+        <div className="ui centered card">
+            <div className="image">
+                <img src={props.preview} />
+            </div>
+            <div className="content">
+                <span>{props.name}</span>
+                <button className="ui basic compact button icon right floated" onClick={props.handleRemove}>
+                    <i className="remove outline icon"></i>
+                </button>
+            </div>
+        </div>
     );
 }
 
@@ -27,8 +38,14 @@ const ImagePreviewList = function(props) {
                 updateState={props.updateState}
                 draggingIndex={props.draggingIndex}
                 items={props.files}
+                name={file.name}
             >
-                {file.name} <button onClick={props.handleRemove(file)}>X</button>
+
+                <PreviewCard
+                    name={file.name}
+                    preview={file.preview}
+                    handleRemove={props.handleRemove(file)}
+                />
             </SortableImagePreview>
         );
     });
@@ -41,16 +58,9 @@ class PdfComposer extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            display: '',
             files: [],
             draggingIndex: null
         };
-    }
-
-    componentDidMount() {
-        this.setState({
-            display: 'IUSIS'
-        });
     }
 
     onFileDrop = (files) => {
@@ -104,17 +114,21 @@ class PdfComposer extends React.Component {
     }
 
     render() {
+        var dropzoneStyle = {
+            width: '100%',
+            height: 200
+        };
         return (
             <div>
-                <Header
-                    display={this.state.display}
-                />
-                <Dropzone
-                    onDrop={this.onFileDrop}
-                    accept="image/*">
-                    <div>Arrastra imagenes, o hace click para formar el PDF.</div>
-                </Dropzone>
-                <button onClick={this.genPDF} disabled={this.state.files.length == 0}>Generar PDF</button>
+                <div className="ui centered card">
+                    <Dropzone
+                        style={dropzoneStyle}
+                        onDrop={this.onFileDrop}
+                        accept="image/*">
+                        <div>Arrastra imagenes, o hace click para formar el PDF.</div>
+                    </Dropzone>
+                    <button className="ui primary button" onClick={this.genPDF} disabled={this.state.files.length == 0}>Generar PDF</button>
+                </div>
                 <ImagePreviewList
                     files={this.state.files}
                     draggingIndex={this.state.draggingIndex}

@@ -4,13 +4,8 @@ import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import 'semantic-ui';
 
-import PdfComposer from './PdfComposer.jsx';
+import Layout from './Layout.jsx';
 
-const App = function() {
-    return (
-        <PdfComposer />
-    );
-}
 
 const countersReducer = (state = [], action) => {
     return state;
@@ -28,7 +23,7 @@ let store = createStore(reducer, window.devToolsExtension && window.devToolsExte
 
 render(
     <Provider store={store}>
-        <App />
+        <Layout />
     </Provider>,
     document.getElementById('root')
 );
