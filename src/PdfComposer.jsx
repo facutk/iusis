@@ -2,6 +2,8 @@ import React from 'react';
 import Dropzone from 'react-dropzone';
 import jsPDF from 'jspdf';
 import { Sortable } from 'react-sortable';
+import { dispatch } from 'redux';
+import { connect } from 'react-redux';
 import './PdfComposer.scss';
 
 const PreviewContent = function(props) {
@@ -55,7 +57,8 @@ const ImagePreviewList = function(props) {
     );
 }
 
-class PdfComposer extends React.Component {
+
+class Composer extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -190,6 +193,32 @@ class PdfComposer extends React.Component {
             </div>
         );
     }
+}
+
+const mapStateToComposerProps = (state) => {
+    return {
+
+    }
+}
+const mapDispatchToComposerProps = (dispatch) => {
+    return {
+        onMaxSizeChange: (maxSize) => {
+            dispatch({
+                type: 'PDF_MAX_SIZE',
+                maxSize: maxSize
+            })
+        }
+    }
+}
+const VisibleComposer = connect(
+    mapStateToComposerProps,
+    mapDispatchToComposerProps
+)(Composer)
+
+const PdfComposer = function(props) {
+    return (
+        <VisibleComposer />
+    );
 }
 
 export default PdfComposer;
