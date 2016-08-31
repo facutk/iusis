@@ -2,19 +2,16 @@ import React from 'react';
 import Dropzone from 'react-dropzone';
 import jsPDF from 'jspdf';
 import { Sortable } from 'react-sortable';
-
+import './PdfComposer.scss';
 
 const PreviewContent = function(props) {
-    var previewContentSpanStyle = {
-        wordWrap: 'break-word'
-    };
     return (
         <div className="ui centered card">
             <div className="image">
                 <img src={props.preview} />
             </div>
             <div className="content">
-                <span style={previewContentSpanStyle}>{props.name}</span>
+                <span >{props.name}</span>
                 <button className="ui basic compact button icon right floated" onClick={props.handleRemove}>
                     <i className="remove outline icon"></i>
                 </button>
@@ -103,9 +100,8 @@ class PdfComposer extends React.Component {
         });
     }
 
-    genPDF = () => {
-
-        // Split files in chunks
+    getFileGroups() {
+        // Split files into groups
         let fileGroups = [];
         if (this.state.maxSize > 0) {
             const maxSize = this.state.maxSize * 1024 * 1024;
@@ -126,8 +122,12 @@ class PdfComposer extends React.Component {
         } else {
             fileGroups.push(this.state.files);
         }
+        return fileGroups;
+    }
 
-        // render chunks
+    genPDF = () => {
+        // render grouped files
+        const fileGroups = this.getFileGroups();
         const dateNow = new Date();
         fileGroups.forEach( (fileGroup, groupIndex) => {
             Promise.all( fileGroup.map( file => { return this.readImageUrl(file.preview) } ) )
@@ -153,16 +153,12 @@ class PdfComposer extends React.Component {
     }
 
     render() {
-        var dropzoneStyle = {
-            width: '100%',
-            height: 200
-        };
         return (
-            <div>
+            <div className="pdf-composer">
                 <div className="ui centered card">
                     <div className="ui">
                         <Dropzone
-                            style={dropzoneStyle}
+                            className="dropzone"
                             onDrop={this.onFileDrop}
                             accept="image/jpeg">
                             <div>Arrastra imagenes, o hace click para formar el PDF.</div>

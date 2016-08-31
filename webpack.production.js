@@ -22,6 +22,10 @@ module.exports = {
                 loader: ExtractTextPlugin.extract("style-loader", "css-loader")
             },
             {
+                test: /\.scss$/,
+                loaders: ["style", "css", "sass"]
+            },
+            {
                 test: /\.(png|jpg|ico)$/,
                 loader: 'file?name=[name].[hash].[ext]'
             },

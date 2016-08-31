@@ -1,16 +1,19 @@
 import React from 'react';
 import PdfComposer from './PdfComposer.jsx';
+import './Layout.scss';
 
 const Header = function() {
-    var headerStyle = {
-        backgroundColor: '#2185d0',
-        color: '#fff',
-        padding: '0.25em',
-        marginBottom: '1em'
-    }
     return (
-        <div>
-            <h1 style={headerStyle} className="ui header">I U S I S</h1>
+        <div className="ui header nav">
+            <h1>I U S I S</h1>
+        </div>
+    );
+}
+
+const Footer = function() {
+    return (
+        <div className="ui inverse footer">
+            <h1>footer!</h1>
         </div>
     );
 }
