@@ -164,7 +164,7 @@ class PdfComposer extends React.Component {
                         <Dropzone
                             style={dropzoneStyle}
                             onDrop={this.onFileDrop}
-                            accept="image/*">
+                            accept="image/jpeg">
                             <div>Arrastra imagenes, o hace click para formar el PDF.</div>
                         </Dropzone>
                     </div>
