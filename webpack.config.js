@@ -19,13 +19,17 @@ module.exports = {
                 loader: "style-loader!css-loader"
             },
             {
-                test: /\.(png|jpg|ico)$/,
+                test: /\.(png|jpg)$/,
                 loader: 'file?name=[name].[hash].[ext]'
             },
             {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                test: /\.(woff|woff2|eot|ttf|svg)$/,
                 loader: 'url-loader?limit=100000'
-            }
+            },
+            {
+                test: /\.ico$/,
+                loader: 'file?name=[name].[ext]?hash=[hash]'
+            },
         ]
     },
     resolve: {
