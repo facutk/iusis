@@ -5,13 +5,16 @@ import { Sortable } from 'react-sortable';
 
 
 const PreviewContent = function(props) {
+    var previewContentSpanStyle = {
+        wordWrap: 'break-word'
+    };
     return (
         <div className="ui centered card">
             <div className="image">
                 <img src={props.preview} />
             </div>
             <div className="content">
-                <span>{props.name}</span>
+                <span style={previewContentSpanStyle}>{props.name}</span>
                 <button className="ui basic compact button icon right floated" onClick={props.handleRemove}>
                     <i className="remove outline icon"></i>
                 </button>
@@ -19,6 +22,7 @@ const PreviewContent = function(props) {
         </div>
     );
 }
+
 
 const ImagePreview = function(props) {
     return (

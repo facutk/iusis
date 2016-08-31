@@ -7,22 +7,20 @@ import 'semantic-ui';
 import Layout from './Layout.jsx';
 
 
-const countersReducer = (state = [], action) => {
+const userReducer = (state = [], action) => {
     return state;
 };
-const productsReducer = (state = [], action) => {
+const pdfComposerReducer = (state = [], action) => {
     return state;
 };
 
 const reducer = combineReducers({
-    counters: countersReducer,
-    products: productsReducer
+    user: userReducer,
+    pdfComposer: pdfComposerReducer
 });
 
-let store = createStore(reducer, window.devToolsExtension && window.devToolsExtension());
-
 render(
-    <Provider store={store}>
+    <Provider store={ createStore(reducer, window.devToolsExtension && window.devToolsExtension()) }>
         <Layout />
     </Provider>,
     document.getElementById('root')
