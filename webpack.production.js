@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require("path");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const PurifyCSSPlugin = require("purifycss-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
@@ -43,6 +44,12 @@ module.exports = {
     plugins: [
         new CleanWebpackPlugin(['dist']),
         new ExtractTextPlugin("styles.[hash].css"),
+        new PurifyCSSPlugin({
+            basePath: __dirname,
+            purifyOptions: {
+                minify: true
+            }
+        }),
         new HtmlWebpackPlugin({
             template: './src/index.template.ejs',
             favicon: './src/favicon.ico',
