@@ -19,3 +19,8 @@ render(
     </Provider>,
     document.getElementById('root')
 );
+
+// service worker cache
+if(process.env.NODE_ENV === 'production') {
+    require('offline-plugin/runtime').install()
+}
