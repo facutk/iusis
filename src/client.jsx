@@ -1,26 +1,20 @@
 import React from 'react';
+
 import { render } from 'react-dom';
-import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
-import 'semantic-ui';
+import { createStore } from 'redux';
 
-import Layout from './Layout.jsx';
+import todoApp from './reducers';
+
+import 'semantic-ui'; // CSS goes first, each component then overrides it with it's own style
+import Layout from './components/Layout';
+import Gaearon from './components/Gaearon';
 
 
-const userReducer = (state = [], action) => {
-    return state;
-};
-const pdfComposerReducer = (state = [], action) => {
-    return state;
-};
-
-const reducer = combineReducers({
-    user: userReducer,
-    pdfComposer: pdfComposerReducer
-});
+const store = createStore(todoApp, window.devToolsExtension && window.devToolsExtension());
 
 render(
-    <Provider store={ createStore(reducer, window.devToolsExtension && window.devToolsExtension()) }>
+    <Provider store={ store }>
         <Layout />
     </Provider>,
     document.getElementById('root')
