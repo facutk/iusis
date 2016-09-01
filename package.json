@@ -9,7 +9,7 @@
     "dev": "concurrent --kill-others \"npm run webpack-dev-server\" \"npm run express-server\"",
     "start": "node server.js",
     "postinstall": "webpack -p --config webpack.production.js",
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha ./src --recursive --compilers js:babel-register"
   },
   "repository": {
     "type": "git",
@@ -35,6 +35,7 @@
     "clean-webpack-plugin": "^0.1.10",
     "cors": "^2.7.1",
     "css-loader": "^0.23.1",
+    "deep-freeze": "0.0.1",
     "expect": "^1.20.2",
     "express": "4.13.3",
     "extract-text-webpack-plugin": "^1.0.1",
