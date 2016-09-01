@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/facutk/iusis#readme",
   "dependencies": {
-    "appcache-webpack-plugin": "^1.3.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-class-properties": "^6.10.2",
     "babel-plugin-transform-runtime": "^6.9.0",

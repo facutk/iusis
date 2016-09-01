@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const path = require("path");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-var AppCachePlugin = require('appcache-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     entry: './src/client.jsx',
@@ -61,10 +60,6 @@ module.exports = {
             'process.env': {
             'NODE_ENV': JSON.stringify('production')
             }
-        }),
-        new AppCachePlugin({
-            settings: ['prefer-online'],
-            output: 'manifest.appcache'
         })
     ]
 };
