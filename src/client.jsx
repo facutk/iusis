@@ -3,9 +3,7 @@ import { render } from 'react-dom';
 import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import 'semantic-ui';
-
 import Layout from './Layout.jsx';
-
 
 const userReducer = (state = [], action) => {
     return state;
@@ -25,3 +23,8 @@ render(
     </Provider>,
     document.getElementById('root')
 );
+
+// service worker cache
+if(process.env.NODE_ENV === 'production') {
+    require('offline-plugin/runtime').install()
+}

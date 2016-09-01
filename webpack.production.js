@@ -1,9 +1,10 @@
 const webpack = require('webpack');
 const path = require("path");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const PurifyCSSPlugin = require("purifycss-webpack-plugin");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const OfflinePlugin = require('offline-plugin');
 module.exports = {
     entry: './src/client.jsx',
     output: {
@@ -47,7 +48,8 @@ module.exports = {
         new PurifyCSSPlugin({
             basePath: __dirname,
             purifyOptions: {
-                minify: true
+                minify: true,
+                info: true
             }
         }),
         new HtmlWebpackPlugin({
@@ -67,6 +69,7 @@ module.exports = {
             'process.env': {
             'NODE_ENV': JSON.stringify('production')
             }
-        })
+        }),
+        new OfflinePlugin()
     ]
 };
