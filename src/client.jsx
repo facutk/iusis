@@ -11,8 +11,16 @@ import App from './components/App';
 
 import Layout from './components/Layout';
 
+const persistedState = {
+    todos: [{
+        id: '0',
+        text: 'Welcome back!',
+        completed: false
+    }]
+}
+
 render (
-    <Provider store={ createStore(todoApp, window.devToolsExtension && window.devToolsExtension()) }>
+    <Provider store={ createStore(todoApp, persistedState, window.devToolsExtension && window.devToolsExtension()) }>
         <Layout />
     </Provider>,
     document.getElementById('root')
