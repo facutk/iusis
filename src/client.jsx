@@ -3,26 +3,13 @@ import 'semantic-ui'; // CSS goes first, each component then overrides it with i
 
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import configureStore from './configureStore';
+import Root from './components/Root';
 
-import todoApp from './reducers'
-import App from './components/App';
-
-import Layout from './components/Layout';
-
-const persistedState = {
-    todos: [{
-        id: '0',
-        text: 'Welcome back!',
-        completed: false
-    }]
-}
+const store = configureStore();
 
 render (
-    <Provider store={ createStore(todoApp, persistedState, window.devToolsExtension && window.devToolsExtension()) }>
-        <Layout />
-    </Provider>,
+    <Root store={ store } />,
     document.getElementById('root')
 );
 
