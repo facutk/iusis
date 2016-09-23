@@ -68,9 +68,60 @@ class Composer extends React.Component {
         };
     }
 
+    convert = (files) => {
+        console.log(files);
+
+        files.forEach( file => {
+            this.objectURLAsBlob(file.preview).then( blob => {
+
+                console.log(blob);
+                let formData = new FormData()
+                formData.append('file', blob);
+                formData.append('name', file.name); // is this needed?
+
+                fetch('/api/convert', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(result=>result.json())
+                .then(json=>{
+                    /*
+                    [
+                        {
+                            "converted image": "image data"
+                        }
+                    ]
+                    */
+                    console.log(json)
+                });
+
+            });
+        });
+
+    }
+
     onFileDrop = (files) => {
+
+        let images = [];
+        let toConvert = [];
+        files.forEach( file => {
+            switch (file.name.split('.').pop()) {
+                case 'jpg':
+                case 'jpeg':
+                    images.push(file);
+                    break;
+                case 'doc':
+                case 'docx':
+                case 'pdf':
+                    toConvert.push(file);
+                    break;
+            }
+        });
+
+        this.convert(toConvert);
+
         this.setState({
-            files: this.state.files.concat(files)
+            files: this.state.files.concat(images)
         });
     }
 
@@ -84,17 +135,31 @@ class Composer extends React.Component {
         });
     }
 
-    readImageUrl(url) {
+    blobAsDataURL(blob) {
+        return new Promise( (resolve, reject) => {
+            let reader = new FileReader();
+            reader.onloadend = function() {
+                resolve(reader.result);
+            }
+            reader.readAsDataURL(blob);
+        })
+    }
+
+    objectURLAsBlob(url) {
         return new Promise( (resolve, reject) => {
             let xhr = new XMLHttpRequest();
             xhr.responseType = 'blob';
 
             xhr.onload = function() {
+                resolve(xhr.response);
+                //console.log(xhr.response);
+                /*
                 let reader = new FileReader();
                 reader.onloadend = function() {
                     resolve(reader.result);
                 }
                 reader.readAsDataURL(xhr.response);
+                */
             };
 
             xhr.onerror = () => reject(this);
@@ -133,7 +198,9 @@ class Composer extends React.Component {
         const fileGroups = this.getFileGroups();
         const dateNow = new Date();
         fileGroups.forEach( (fileGroup, groupIndex) => {
-            Promise.all( fileGroup.map( file => { return this.readImageUrl(file.preview) } ) )
+            Promise.all( fileGroup.map( file => {
+                return this.objectURLAsBlob(file.preview).then(blob => { return this.blobAsDataURL(blob) } )
+            } ) )
             .then(dataUrls => {
                 let doc = new jsPDF();
                 dataUrls.forEach( (dataUrl, index) => {
@@ -162,8 +229,7 @@ class Composer extends React.Component {
                     <div className="ui">
                         <Dropzone
                             className="dropzone"
-                            onDrop={this.onFileDrop}
-                            accept="image/jpeg">
+                            onDrop={this.onFileDrop}>
                             <div>Arrastra imagenes, o hace click para formar el PDF.</div>
                         </Dropzone>
                     </div>
