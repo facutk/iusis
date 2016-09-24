@@ -18,7 +18,7 @@ app.get('/api/convert', function(req, res) {
 */
 app.get('/trysave', function(req, res) {
     var fs = require('fs');
-    fs.writeFile("hola.txt", "datos", function (e) { if (e) return res.send(e); return res.send("ok");})
+    fs.writeFile("/tmp/hola.txt", "datos", function (e) { if (e) return res.send(e); return res.send("ok");});
 });
 
 app.post('/api/convert', upload.single('file'), function(req, res) {
