@@ -21,13 +21,13 @@ app.get('/trysave', function(req, res) {
     exec('touch /tmp/3.txt', function(e, stdout, stderr){ });
 
     var fs = require('fs');
-    fs.writeFile("/tmp/hola.txt", "datos", function (e) {
+    fs.writeFile("/tmp/hola.txt", "datos re piolas copados", function (e) {
 
         fs.readFile('/tmp/hola.txt', 'utf8', function (err, data) {
             if (err) {
                 return res.send(err);
             }
-            res.send("data")
+            res.send(data)
         });
     });
 });
