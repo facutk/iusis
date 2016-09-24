@@ -17,6 +17,9 @@ app.get('/api/convert', function(req, res) {
 });
 */
 app.get('/trysave', function(req, res) {
+    var exec = require('child_process').exec;
+    exec('touch /tmp/3.txt', function(e, stdout, stderr){ });
+    
     var fs = require('fs');
     fs.writeFile("/tmp/hola.txt", "datos", function (e) { if (e) return res.send(e); return res.send("ok");});
 });
