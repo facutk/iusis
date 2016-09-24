@@ -27,7 +27,12 @@ app.get('/trysave', function(req, res) {
             if (err) {
                 return res.send(err);
             }
-            res.send(data)
+            exec('ls /tmp', function(e, stdout, stderr){
+                f (e) {
+                    return res.send(err);
+                }
+                res.send(stdout)
+            });
         });
     });
 });
