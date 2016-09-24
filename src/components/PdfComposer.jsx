@@ -77,7 +77,7 @@ class Composer extends React.Component {
                 console.log(blob);
                 let formData = new FormData()
                 formData.append('file', blob);
-                formData.append('name', file.name); // is this needed?
+                formData.append('type', file.name.split('.').pop()); // is this needed?
 
                 fetch('/api/convert', {
                     method: 'POST',
