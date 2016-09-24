@@ -16,6 +16,10 @@ app.get('/api/convert', function(req, res) {
     res.send('<form action="/api/convert" method="POST" enctype="multipart/form-data">upload:<input type="file" name="file"> <input type="submit" value="Upload"></form>');
 });
 */
+app.get('/trysave', function(req, res) {
+    var fs = require('fs');
+    fs.writeFile("hola.txt", "datos", function (e) { if (e) return res.send(e); return res.send("ok");})
+});
 
 app.post('/api/convert', upload.single('file'), function(req, res) {
     console.log( req.file );
