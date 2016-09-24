@@ -28,7 +28,7 @@ app.get('/trysave', function(req, res) {
                 return res.send(err);
             }
             exec('ls /tmp', function(e, stdout, stderr){
-                f (e) {
+                if (e) {
                     return res.send(err);
                 }
                 res.send(stdout)
