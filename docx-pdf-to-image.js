@@ -34,16 +34,19 @@ var docxToPdf = function(params) {
 
 var pdfToJpg = function(params) {
     console.log('pdfToJpg');
+    /*
     var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -sOutputFile=" +
                      params.filename +
                      "%03d.jpg " +
                      params.filename;
+                     */
     var promise = new Promise(function(resolve, reject) {
         console.log("converting pdf");
-        console.log(gs_command);
-        exec(gs_command,
+        //console.log(gs_command);
+        exec('ls -la',
             { cwd: path },
             function(err, stdout, stderr) {
+                console.log(stdout);
                 if (err.length) {
                     console.log(err);
                     reject( err );
