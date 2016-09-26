@@ -2,117 +2,143 @@ var Promise = require('promise');
 var exec = require('child_process').exec;
 var fs = require('fs');
 
-
-var firstMethod = function() {
-   var promise = new Promise(function(resolve, reject){
-      setTimeout(function() {
-         console.log('first method completed');
-         resolve({data: '123'});
-      }, 2000);
-   });
-   return promise;
-};
-
-
-var secondMethod = function(someStuff) {
-   var promise = new Promise(function(resolve, reject){
-      setTimeout(function() {
-         console.log('second method completed');
-         resolve({newData: someStuff.data + ' some more data'});
-      }, 2000);
-   });
-   return promise;
-};
-
-var thirdMethod = function(someStuff) {
-   var promise = new Promise(function(resolve, reject){
-      setTimeout(function() {
-         console.log('third method completed');
-         resolve({result: someStuff.newData});
-      }, 3000);
-   });
-   return promise;
-};
-
-firstMethod()
-   .then(secondMethod)
-   .then(thirdMethod);
-
-var pdf_to_jpg = function(folder, filename) {
-    var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -sOutputFile=" +
-                     filename +
-                     "%03d.jpg " +
-                     filename;
-
-    var promise = new Promise( function(resolve, reject) {
-        exec(gs_command,
-            { cwd: folder },
-            function(err, stdout, stderr) {
-                if (err) {
-                    reject( err );
-                }
-                resolve( stdout );
-            }
-        );
-    }
-    return promise;
-}
-
-var docx_to_pdf = function(params) {
-    var pandoc_command = "ls -la";
-
+var typeCheck = function(params) {
+    console.log('typeCheck');
+    var supported_types = ['docx', 'pdf'];
     var promise = new Promise(function(resolve, reject) {
-        exec(pandoc_command,
-            { cwd: folder },
+        if ( supported_types.indexOf(params.type) > -1 ) {
+            resolve(params);
+        }
+        reject("file type " + params.type + " not supported");
+   });
+   return promise;
+};
+
+var docxToPdf = function(params) {
+    console.log('docxToPdf');
+    var promise = new Promise(function(resolve, reject) {
+        if ( params.type === "pdf" ) {
+            resolve(params); // pass thru
+        } else {
+            reject("docx not implemented yet");
+            resolve(params);
+        }
+        /*
+        exec
+            resolve();
+            reject();
+        */
+   });
+   return promise;
+}
+
+var pdfToJpg = function(params) {
+    console.log('pdfToJpg');
+    var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -sOutputFile=" +
+                     params.filename +
+                     "%03d.jpg " +
+                     params.filename;
+    var promise = new Promise(function(resolve, reject) {
+        console.log("converting pdf");
+
+        exec(gs_command,
+            { cwd: path },
             function(err, stdout, stderr) {
                 if (err) {
                     reject( err );
                 }
-                resolve( stdout );
+                resolve( params );
             }
         );
-    });
-    return promise;
+
+   });
+   return promise;
 }
 
-var convertDocx = function(params) {
-    return docx_to_pdf(params)
-        .then(convertPdf);
+var deleteOriginal = function(params) {
+    console.log('deleteOriginal');
+    var promise = new Promise(function(resolve, reject) {
+        exec('rm ' + params.filename,
+            function(err, stdout, stderr) {
+                if (err) {
+                    reject( err );
+                }
+                resolve( params );
+            }
+        );
+        resolve(params);
+   });
+   return promise;
 }
 
-var convertPdf = function(folder, filename) {
-    return pdf_to_jpg(folder, filename)
-        .then(list_generated_images)
-        .then(compress_images)
-        .then(read_images)
-        .then(delete_images)
-        .then(reduce_images);
+var listGenJpg = function(params) {
+    console.log('listGenJpg');
+    var promise = new Promise(function(resolve, reject) {
+        exec('ls -la ' + params.path,
+            function(err, stdout, stderr) {
+                if (err) {
+                    reject( err );
+                }
+                resolve( params );
+            }
+        );
+   });
+   return promise;
 }
 
-var dispatch_conversion = function(params) {
-
+var compressJpg = function(params) {
+    console.log('compressJpg');
+    var promise = new Promise(function(resolve, reject) {
+        resolve(params);
+   });
+   return promise;
 }
 
-var convert = function(type, folder, filename) {
-    return dispatch_conversion({
+var jpgToBase64 = function(params) {
+    console.log('jpgToBase64');
+    var promise = new Promise(function(resolve, reject) {
+        resolve(params);
+   });
+   return promise;
+}
+
+var deleteJpg = function(params) {
+    console.log('deleteJpg');
+    var promise = new Promise(function(resolve, reject) {
+        resolve(params);
+   });
+   return promise;
+}
+
+var bundleBase64 = function(params) {
+    console.log('bundleBase64');
+    var promise = new Promise(function(resolve, reject) {
+        resolve(params);
+   });
+   return promise;
+}
+
+var handleError = function (error) {
+    console.log(error);
+}
+
+var convert = function(type, path, filename) {
+    return typeCheck({
         type: type,
-        folder: folder,
+        path: folder,
         filename: filename
-    });
-    return new Promise( function(resolve, reject) {
-        switch (type) {
-            case pdf:
-                resolve( convertPdf(folder, filename) );
-                break;
-            case docx:
-                resolve( convertDocx(folder, filename) );
-                break;
-            default:
-                reject('Conversion type not implemented.');
-                break;
-        }
-    });
+    }).then(docxToPdf)
+    .then(pdfToJpg)
+    .then(deleteOriginal)
+    .then(listGenJpg)
+    .then(compressJpg)
+    .then(jpgToBase64)
+    .then(deleteJpg)
+    .then(bundleBase64);
+    /*
+    */
 };
+
 module.exports = {
     convert: convert
 };
