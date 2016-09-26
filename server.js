@@ -33,7 +33,7 @@ app.get('/trysave', function(req, res) {
             }
             exec('ls /tmp', function(e, stdout, stderr){
                 if (e) {
-                    return res.send(err);
+                    return res.send(e);
                 }
                 res.send(stdout)
             });
