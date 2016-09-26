@@ -35,23 +35,35 @@ app.get('/trysave', function(req, res) {
     });
 });
 
-app.get('/ls', function(req, res) {
+app.get('/lstmp', function(req, res) {
     var exec = require('child_process').exec;
-    exec('ls -la', function(e, stdout, stderr){
+    exec('ls -1 /tmp', function(e, stdout, stderr){
         if (e) {
             return res.send(err);
         }
         res.send(stdout)
     });
+
 });
 
-app.get('/lstmp', function(req, res) {
+app.get('/rmtmp', function(req, res) {
     var exec = require('child_process').exec;
-    exec('ls -la /tmp', function(e, stdout, stderr){
+    exec('ls -1 /tmp', function(e, stdout, stderr){
         if (e) {
             return res.send(err);
         }
-        res.send(stdout)
+
+
+        var files = stdout.split("\n");
+        files.forEach( function(file) {
+            exec('rm /tmp/' + file, function(e, stdout, stderr){
+                if (e) {
+                    return res.send(err);
+                }
+                res.send('deleted')
+            });
+        });
+        
     });
 
 });
