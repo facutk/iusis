@@ -66,7 +66,6 @@ var deleteOriginal = function(params) {
                 resolve( params );
             }
         );
-        resolve(params);
    });
    return promise;
 }
