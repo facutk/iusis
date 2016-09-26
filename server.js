@@ -15,6 +15,26 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 
+app.get('/trysave', function(req, res) {
+    var exec = require('child_process').exec;
+    exec('touch /tmp/3.txt', function(e, stdout, stderr){ });
+    var fs = require('fs');
+
+    fs.writeFile("/tmp/hola.txt", "datos re piolas copados", function (e) {
+        fs.readFile('/tmp/hola.txt', 'utf8', function (err, data) {
+            if (err) {
+                return res.send(err);
+            }
+            exec('ls /tmp', function(e, stdout, stderr){
+                if (e) {
+                    return res.send(err);
+                }
+                res.send(stdout)
+            });
+        });
+    });
+});
+
 app.post('/api/convert', upload.single('file'), function(req, res) {
     docxPdfToImage.convert(
         req.body.type,
