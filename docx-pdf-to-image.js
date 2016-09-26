@@ -78,6 +78,7 @@ var listGenJpg = function(params) {
                 if (err) {
                     reject( err );
                 }
+                var genen
                 resolve( params );
             }
         );
@@ -97,6 +98,7 @@ var jpgToBase64 = function(params) {
     console.log('jpgToBase64');
     var promise = new Promise(function(resolve, reject) {
         resolve(params);
+        //(new Buffer('datos piolas!')).toString('base64');
    });
    return promise;
 }
