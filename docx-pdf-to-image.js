@@ -44,7 +44,7 @@ var pdfToJpg = function(params) {
 
         exec(gs_command, function(err, stdout, stderr) {
             console.log(stdout);
-            if (err.length) {
+            if (err) {
                 console.log(err);
                 reject( err );
             }
