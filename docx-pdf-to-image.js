@@ -40,11 +40,12 @@ var pdfToJpg = function(params) {
                      params.filename;
     var promise = new Promise(function(resolve, reject) {
         console.log("converting pdf");
-
+        console.log(gs_command);
         exec(gs_command,
             { cwd: path },
             function(err, stdout, stderr) {
                 if (err) {
+                    console.log(err);
                     reject( err );
                 }
                 resolve( params );
