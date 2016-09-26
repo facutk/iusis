@@ -82,13 +82,16 @@ app.get('/gstmp', function(req, res) {
 
             var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -sOutputFile=/tmp/" +
                              file + "%03d.jpg /tmp/" + file;
-
-            exec(gs_command, function(err, stdout, stderr){
-                if (err) {
-                    return res.send(err);
-                }
-                res.send('converted')
-            });
+            console.log(gs_command);
+            if( file.length ) {
+                exec(gs_command, function(err, stdout, stderr){
+                    if (err) {
+                        return res.send(err);
+                    }
+                    res.send('converted')
+                });
+            }
+            
         });
 
     });
