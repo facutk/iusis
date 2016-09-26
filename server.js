@@ -48,22 +48,49 @@ app.get('/lstmp', function(req, res) {
 
 app.get('/rmtmp', function(req, res) {
     var exec = require('child_process').exec;
-    exec('ls -1 /tmp', function(e, stdout, stderr){
-        if (e) {
+    exec('ls -1 /tmp', function(err, stdout, stderr){
+        if (err) {
             return res.send(err);
         }
 
 
         var files = stdout.split("\n");
         files.forEach( function(file) {
-            exec('rm /tmp/' + file, function(e, stdout, stderr){
-                if (e) {
+            exec('rm /tmp/' + file, function(err, stdout, stderr){
+                if (err) {
                     return res.send(err);
                 }
                 res.send('deleted')
             });
         });
-        
+
+    });
+
+});
+
+
+app.get('/gstmp', function(req, res) {
+    var exec = require('child_process').exec;
+    exec('ls -1 /tmp', function(err, stdout, stderr){
+        if (err) {
+            return res.send(err);
+        }
+
+
+        var files = stdout.split("\n");
+        files.forEach( function(file) {
+
+            var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -sOutputFile=/tmp/" +
+                             file + "%03d.jpg /tmp/" + file;
+
+            exec(gs_command, function(err, stdout, stderr){
+                if (err) {
+                    return res.send(err);
+                }
+                res.send('converted')
+            });
+        });
+
     });
 
 });
