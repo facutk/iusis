@@ -34,26 +34,22 @@ var docxToPdf = function(params) {
 
 var pdfToJpg = function(params) {
     console.log('pdfToJpg');
-    /*
     var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -sOutputFile=" +
-                     params.filename +
+                     params.path + params.filename +
                      "%03d.jpg " +
-                     params.filename;
-                     */
+                     params.path + params.filename;
     var promise = new Promise(function(resolve, reject) {
         console.log("converting pdf");
-        //console.log(gs_command);
-        exec('ls -la',
-            { cwd: path },
-            function(err, stdout, stderr) {
-                console.log(stdout);
-                if (err.length) {
-                    console.log(err);
-                    reject( err );
-                }
-                resolve( params );
+        console.log(gs_command);
+
+        exec(gs_command, function(err, stdout, stderr) {
+            console.log(stdout);
+            if (err.length) {
+                console.log(err);
+                reject( err );
             }
-        );
+            resolve( params );
+        });
 
    });
    return promise;
@@ -62,7 +58,7 @@ var pdfToJpg = function(params) {
 var deleteOriginal = function(params) {
     console.log('deleteOriginal');
     var promise = new Promise(function(resolve, reject) {
-        exec('rm ' + params.filename,
+        exec('rm ' + params.path + params.filename,
             function(err, stdout, stderr) {
                 if (err) {
                     reject( err );
@@ -78,7 +74,7 @@ var deleteOriginal = function(params) {
 var listGenJpg = function(params) {
     console.log('listGenJpg');
     var promise = new Promise(function(resolve, reject) {
-        exec('ls -la ' + params.path,
+        exec('ls -1 ' + params.path + ' | grep ' + params.filename,
             function(err, stdout, stderr) {
                 if (err) {
                     reject( err );
