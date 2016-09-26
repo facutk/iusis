@@ -125,7 +125,7 @@ var handleError = function (error) {
 var convert = function(type, path, filename) {
     return typeCheck({
         type: type,
-        path: folder,
+        path: path,
         filename: filename
     }).then(docxToPdf)
     .then(pdfToJpg)
