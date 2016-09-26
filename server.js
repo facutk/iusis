@@ -35,6 +35,27 @@ app.get('/trysave', function(req, res) {
     });
 });
 
+app.get('/ls', function(req, res) {
+    var exec = require('child_process').exec;
+    exec('ls -la', function(e, stdout, stderr){
+        if (e) {
+            return res.send(err);
+        }
+        res.send(stdout)
+    });
+});
+
+app.get('/lstmp', function(req, res) {
+    var exec = require('child_process').exec;
+    exec('ls -la /tmp', function(e, stdout, stderr){
+        if (e) {
+            return res.send(err);
+        }
+        res.send(stdout)
+    });
+
+});
+
 app.post('/api/convert', upload.single('file'), function(req, res) {
     docxPdfToImage.convert(
         req.body.type,
