@@ -68,6 +68,25 @@ class Composer extends React.Component {
         };
     }
 
+    b64toBlob = (b64, onsuccess, onerror) => {
+        var img = new Image();
+
+        img.onerror = onerror;
+
+        img.onload = function onload() {
+            var canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(onsuccess);
+        };
+
+        img.src = b64;
+    }
+
     convert = (files) => {
         console.log(files);
 
@@ -84,7 +103,7 @@ class Composer extends React.Component {
                     body: formData
                 })
                 .then(result=>result.json())
-                .then(json=>{
+                .then(b64Images =>{
                     /*
                     [
                         {
@@ -92,7 +111,21 @@ class Composer extends React.Component {
                         }
                     ]
                     */
+                    b64Images.map(b64Image => {
+                        var base64Data = 'data:image/jpg;base64,' + b64Image;
+                        b64toBlob(base64Data,
+                            function(blob) {
+                                var url = window.URL.createObjectURL(blob);
+                                console.log(url)
+                                // do something with url
+                            }, function(error) {
+                                // handle error
+                            });
+                    });
+
                     console.log(json)
+                }).catch(error=>{
+                    console.log(error);
                 });
 
             });
