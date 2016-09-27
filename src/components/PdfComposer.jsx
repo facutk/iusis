@@ -104,6 +104,7 @@ class Composer extends React.Component {
                 })
                 .then(result=>result.json())
                 .then(b64Images =>{
+                    console.log(b64Images)
                     /*
                     [
                         {
@@ -123,7 +124,6 @@ class Composer extends React.Component {
                             });
                     });
 
-                    console.log(json)
                 }).catch(error=>{
                     console.log(error);
                 });
