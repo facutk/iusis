@@ -105,9 +105,7 @@ app.post('/api/convert', upload.single('file'), function(req, res) {
         req.file.filename
     ).then( function (data) {
         console.log(data)
-        res.status(200).json({
-            status: 'ok'
-        });
+        res.status(200).json(data);
     }).catch( function (error) {
         res.status(500).json({
             error: error
