@@ -110,7 +110,6 @@ var loadJpgsToMemory = function(params) {
         }))
         .then(function(loadedImages) {
             params.loadedImages = loadedImages;
-            console.log(loadedImages);
             resolve(params);
         })
         .catch(function(err) {
@@ -139,6 +138,7 @@ var deleteOriginalFile = function(params) {
     return deleteFile(params.path + params.filename)
     var promise = new Promise(function(resolve, reject) {
         deleteFile(params.path + params.filename).then(function (msg) {
+            console.log(params);
             resolve( params );
         }).catch(function(err) {
             reject(err);
