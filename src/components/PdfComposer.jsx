@@ -114,12 +114,19 @@ class Composer extends React.Component {
                     */
                     b64Images.map(b64Image => {
                         var base64Data = 'data:image/jpg;base64,' + b64Image;
-                        this.b64toBlob(base64Data,
-                            function(blob) {
+                        console.log(base64Data);
+                        this.b64toBlob(base64Data, blob => {
                                 var url = window.URL.createObjectURL(blob);
-                                console.log(url)
+                                console.log(url);
+
+                                this.setState({
+                                    files: this.state.files.concat({
+                                        name: 'generated',
+                                        preview: url
+                                    })
+                                });
                                 // do something with url
-                            }, function(error) {
+                            }, error => {
                                 // handle error
                             });
                     });
