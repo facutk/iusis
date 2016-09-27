@@ -55,32 +55,6 @@ var pdfToJpg = function(params) {
    return promise;
 }
 
-var deleteFile = function(file) {
-    var promise = new Promise(function(resolve, reject) {
-        console.log('delete: ', file);
-        fs.unlink(file,function(err){
-            if(err) reject( err );
-
-            resolve( 'deleted' );
-        });
-
-   });
-   return promise;
-}
-
-var deleteOriginalFile = function(params) {
-    console.log('deleteOriginalFile');
-    return deleteFile(params.path + params.filename)
-    var promise = new Promise(function(resolve, reject) {
-        deleteFile(params.path + params.filename).then(function (msg) {
-            resolve( params );
-        }).catch(function(err) {
-            reject(err);
-        })
-   });
-   return promise;
-}
-
 var listGenJpg = function(params) {
     console.log('listGenJpg');
     var promise = new Promise(function(resolve, reject) {
@@ -136,12 +110,39 @@ var loadJpgsToMemory = function(params) {
         }))
         .then(function(loadedImages) {
             params.loadedImages = loadedImages;
+            console.log(loadedImages);
             resolve(params);
         })
         .catch(function(err) {
             reject(err);
         });
 
+   });
+   return promise;
+}
+
+var deleteFile = function(file) {
+    var promise = new Promise(function(resolve, reject) {
+        console.log('delete: ', file);
+        fs.unlink(file,function(err){
+            if(err) reject( err );
+
+            resolve( 'deleted' );
+        });
+
+   });
+   return promise;
+}
+
+var deleteOriginalFile = function(params) {
+    console.log('deleteOriginalFile');
+    return deleteFile(params.path + params.filename)
+    var promise = new Promise(function(resolve, reject) {
+        deleteFile(params.path + params.filename).then(function (msg) {
+            resolve( params );
+        }).catch(function(err) {
+            reject(err);
+        })
    });
    return promise;
 }
