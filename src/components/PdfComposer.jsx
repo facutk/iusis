@@ -80,7 +80,7 @@ class Composer extends React.Component {
 
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
+            console.log('image loaded!', canvas)
             canvas.toBlob(onsuccess);
         };
 
