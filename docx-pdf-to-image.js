@@ -57,7 +57,7 @@ var pdfToJpg = function(params) {
 
 var deleteFile = function(file) {
     var promise = new Promise(function(resolve, reject) {
-
+        console.log('delete: ', file);
         fs.unlink(file,function(err){
             if(err) reject( err );
 
@@ -97,6 +97,7 @@ var listGenJpg = function(params) {
                 return file.substr(-4) === ".jpg" &&
                     params.filename.indexOf(file);
             });
+            console.log(params.images);
             resolve( params );
         });
 
