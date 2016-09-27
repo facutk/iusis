@@ -55,17 +55,28 @@ var pdfToJpg = function(params) {
    return promise;
 }
 
-var deleteOriginal = function(params) {
-    console.log('deleteOriginal');
+var deleteFile = function(file) {
     var promise = new Promise(function(resolve, reject) {
-        exec('rm ' + params.path + params.filename,
-            function(err, stdout, stderr) {
-                if (err) {
-                    reject( err );
-                }
-                resolve( params );
-            }
-        );
+
+        fs.unlink(file,function(err){
+            if(err) reject( err );
+
+            resolve( 'deleted' );
+        });
+
+   });
+   return promise;
+}
+
+var deleteOriginalFile = function(params) {
+    console.log('deleteOriginalFile');
+    return deleteFile(params.path + params.filename)
+    var promise = new Promise(function(resolve, reject) {
+        deleteFile(params.path + params.filename).then(function (msg) {
+            resolve( params );
+        }).catch(function(err) {
+            reject(err);
+        })
    });
    return promise;
 }
@@ -73,16 +84,17 @@ var deleteOriginal = function(params) {
 var listGenJpg = function(params) {
     console.log('listGenJpg');
     var promise = new Promise(function(resolve, reject) {
-        exec('ls -1 ' + params.path + ' | grep ' + params.filename,
-            function(err, stdout, stderr) {
-                if (err) {
-                    reject( err );
-                }
-                var generatedJpgs = stdout.split(".");
-                params.images = generatedJpgs;
-                resolve( params );
-            }
-        );
+
+        fs.readdir(params.path, function (err, files) {
+            if (err) reject(err);
+
+            params.images = files.filter(function(file){
+                // return only files generated from current original file
+                return file.indexOf(params.filename);
+            });
+            resolve( params );
+        });
+
    });
    return promise;
 }
@@ -95,35 +107,51 @@ var compressJpg = function(params) {
    return promise;
 }
 
-var jpgToBase64 = function(params) {
-    console.log('jpgToBase64');
+var readFileToMemory = function(file) {
+    var promise = new Promise(function(resolve, reject) {
+        fs.readFile(file, 'utf8', function (err, data) {
+            if (err) {
+                return reject(err);
+            }
+            resolve(data);
+        });
+    });
+    return promise;
+}
+
+var loadJpgsToMemory = function(params) {
+    console.log('loadJpgsToMemory');
     var promise = new Promise(function(resolve, reject) {
 
-        var base64images = [];
-        params.images.forEach( function(image) {
-            fs.readFile(params.path + image, 'utf8', function (err, data) {
-                if (err) {
-                    return reject(err);
-                }
-
-                base64images.push(
-                    (new Buffer(data)).toString('base64');
-                );
-
-            });
+        Promise.all(params.images.map(function(image) {
+            return readFileToMemory(params.path + image);
+        }))
+        .then(function(loadedImages) {
+            params.loadedImages = loadedImages;
+            resolve(params);
+        })
+        .catch(function(err) {
+            reject(err);
         });
 
-        resolve(params);
-
-        //(new Buffer('datos piolas!')).toString('base64');
    });
    return promise;
 }
 
-var deleteJpg = function(params) {
-    console.log('deleteJpg');
+var deleteJpgs = function(params) {
+    console.log('deleteJpgs');
     var promise = new Promise(function(resolve, reject) {
-        resolve(params);
+
+        Promise.all(params.images.map(function(image) {
+            return deleteFile(params.path + image);
+        }))
+        .then(function(msg) {
+            resolve(params);
+        })
+        .catch(function(err) {
+            reject(err);
+        });
+
    });
    return promise;
 }
@@ -131,7 +159,13 @@ var deleteJpg = function(params) {
 var bundleBase64 = function(params) {
     console.log('bundleBase64');
     var promise = new Promise(function(resolve, reject) {
-        resolve(params);
+
+        if (params.loadedImages.length === 0) reject('no files converted');
+
+        resolve(params.loadedImages.map(function(loadedImage){
+            return (new Buffer(loadedImage)).toString('base64');
+        }));
+
    });
    return promise;
 }
@@ -147,14 +181,13 @@ var convert = function(type, path, filename) {
         filename: filename
     }).then(docxToPdf)
     .then(pdfToJpg)
-    .then(deleteOriginal)
+    .then(deleteOriginalFile)
     .then(listGenJpg)
     .then(compressJpg)
-    .then(jpgToBase64)
-    .then(deleteJpg)
+    .then(loadJpgsToMemory)
+    .then(deleteJpgs)
     .then(bundleBase64);
-    /*
-    */
+
 };
 
 module.exports = {
