@@ -135,7 +135,6 @@ var deleteFile = function(file) {
 
 var deleteOriginalFile = function(params) {
     console.log('deleteOriginalFile');
-    return deleteFile(params.path + params.filename)
     var promise = new Promise(function(resolve, reject) {
         deleteFile(params.path + params.filename).then(function (msg) {
             console.log(params);
