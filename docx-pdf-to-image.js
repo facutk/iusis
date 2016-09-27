@@ -78,7 +78,8 @@ var listGenJpg = function(params) {
                 if (err) {
                     reject( err );
                 }
-                var genen
+                var generatedJpgs = stdout.split(".");
+                params.images = generatedJpgs;
                 resolve( params );
             }
         );
@@ -97,7 +98,23 @@ var compressJpg = function(params) {
 var jpgToBase64 = function(params) {
     console.log('jpgToBase64');
     var promise = new Promise(function(resolve, reject) {
+
+        var base64images = [];
+        params.images.forEach( function(image) {
+            fs.readFile(params.path + image, 'utf8', function (err, data) {
+                if (err) {
+                    return reject(err);
+                }
+
+                base64images.push(
+                    (new Buffer(data)).toString('base64');
+                );
+
+            });
+        });
+
         resolve(params);
+
         //(new Buffer('datos piolas!')).toString('base64');
    });
    return promise;
