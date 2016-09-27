@@ -86,6 +86,10 @@ var listGenJpg = function(params) {
     var promise = new Promise(function(resolve, reject) {
 
         fs.readdir(params.path, function (err, files) {
+
+            console.log('err: ', err);
+            console.log('files: ', files);
+            
             if (err) reject(err);
 
             params.images = files.filter(function(file){
@@ -181,10 +185,10 @@ var convert = function(type, path, filename) {
         filename: filename
     }).then(docxToPdf)
     .then(pdfToJpg)
-    .then(deleteOriginalFile)
     .then(listGenJpg)
     .then(compressJpg)
     .then(loadJpgsToMemory)
+    .then(deleteOriginalFile)
     .then(deleteJpgs)
     .then(bundleBase64);
 
