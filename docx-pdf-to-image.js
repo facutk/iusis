@@ -89,12 +89,13 @@ var listGenJpg = function(params) {
 
             console.log('err: ', err);
             console.log('files: ', files);
-            
+
             if (err) reject(err);
 
             params.images = files.filter(function(file){
                 // return only files generated from current original file
-                return file.indexOf(params.filename);
+                return file.substr(-4) === ".jpg" &&
+                    params.filename.indexOf(file);
             });
             resolve( params );
         });
