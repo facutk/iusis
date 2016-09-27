@@ -107,6 +107,7 @@ var listGenJpg = function(params) {
 
 var compressJpg = function(params) {
     console.log('compressJpg');
+    console.log(params)
     var promise = new Promise(function(resolve, reject) {
         resolve(params);
    });
@@ -127,6 +128,7 @@ var readFileToMemory = function(file) {
 
 var loadJpgsToMemory = function(params) {
     console.log('loadJpgsToMemory');
+    console.log(params);
     var promise = new Promise(function(resolve, reject) {
 
         Promise.all(params.images.map(function(image) {
@@ -146,6 +148,7 @@ var loadJpgsToMemory = function(params) {
 
 var deleteJpgs = function(params) {
     console.log('deleteJpgs');
+    console.log(params);
     var promise = new Promise(function(resolve, reject) {
 
         Promise.all(params.images.map(function(image) {
