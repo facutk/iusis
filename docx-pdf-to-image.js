@@ -53,11 +53,13 @@ var docxToPdf = function(params) {
 
 var pdfToJpg = function(params) {
     console.log('pdfToJpg');
+
     var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -r150 " +
                      "-dINTERPOLATE " +
                      "-sOutputFile=" + params.path + params.filename +
                      "%03d.jpg " +
                      params.path + params.filename;
+
     var promise = new Promise(function(resolve, reject) {
         console.log("converting pdf");
         console.log(gs_command);
@@ -173,7 +175,6 @@ var deleteOriginalFile = function(params) {
     console.log('deleteOriginalFile');
     var promise = new Promise(function(resolve, reject) {
         deleteFile(params.path + params.filename).then(function (msg) {
-            //console.log(params);
             resolve( params );
         }).catch(function(err) {
             reject(err);
@@ -184,7 +185,6 @@ var deleteOriginalFile = function(params) {
 
 var deleteJpgs = function(params) {
     console.log('deleteJpgs');
-    //console.log(params);
     var promise = new Promise(function(resolve, reject) {
 
         Promise.all(params.images.map(function(image) {
