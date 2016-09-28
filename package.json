@@ -65,6 +65,7 @@
     "react-router": "3.0.0-alpha.3",
     "react-sortable": "^1.1.0",
     "redux": "^3.5.2",
+    "reqclient": "^2.0.1",
     "sass-loader": "^4.0.0",
     "semantic-ui-css": "^2.2.4",
     "style-loader": "^0.13.1",
