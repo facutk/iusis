@@ -1,6 +1,8 @@
 var Promise = require('promise');
 var exec = require('child_process').exec;
 var fs = require('fs');
+var imagemin = require('imagemin');
+var imageminMozjpeg = require('imagemin-mozjpeg');
 
 var typeCheck = function(params) {
     console.log('typeCheck');
@@ -84,7 +86,23 @@ var compressJpg = function(params) {
     console.log('compressJpg');
     console.log(params)
     var promise = new Promise(function(resolve, reject) {
-        resolve(params);
+
+        var imagesInPath = params.images.map(function(image){
+            return params.path + image;
+        });
+        imagemin(imagesInPath, params.path, {
+            plugins: [
+                imageminMozjpeg()
+            ]
+        }).then(function(files) {
+            console.log("compressed");
+            resolve(params);
+        }).catch(function(error){
+            console.log(error);
+            reject(error);
+        });
+
+
    });
    return promise;
 }
