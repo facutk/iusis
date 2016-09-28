@@ -121,7 +121,7 @@ class Composer extends React.Component {
 
                                 this.setState({
                                     files: this.state.files.concat({
-                                        name: file.name + ' (' + index + '/' + b64Images.length + ')',
+                                        name: file.name + ' (' + (index + 1) + '/' + b64Images.length + ')',
                                         preview: url
                                     })
                                 });
