@@ -35,6 +35,7 @@ var docxToPdf = function(params) {
 var pdfToJpg = function(params) {
     console.log('pdfToJpg');
     var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -r150 " +
+                     "-dINTERPOLATE " +
                      "-sOutputFile=" +params.path + params.filename +
                      "%03d.jpg " +
                      params.path + params.filename;
