@@ -81,7 +81,7 @@ class Composer extends React.Component {
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
             console.log('image loaded!', canvas)
-            canvas.toBlob(onsuccess);
+            canvas.toBlob(onsuccess, "image/jpeg", 0.95);
         };
 
         img.src = b64;
@@ -112,8 +112,8 @@ class Composer extends React.Component {
                         }
                     ]
                     */
-                    b64Images.map(b64Image => {
-                        var base64Data = 'data:image/jpeg;base64,' + b64Image;
+                    b64Images.forEach( (b64Image, index) => {
+                        var base64Data = 'data:image/jpg;base64,' + b64Image;
                         console.log(base64Data);
                         this.b64toBlob(base64Data, blob => {
                                 var url = window.URL.createObjectURL(blob);
@@ -121,7 +121,7 @@ class Composer extends React.Component {
 
                                 this.setState({
                                     files: this.state.files.concat({
-                                        name: 'generated',
+                                        name: file.name + ' (' + index + '/' + b64Images.length + ')',
                                         preview: url
                                     })
                                 });
