@@ -34,9 +34,8 @@ var docxToPdf = function(params) {
 
 var pdfToJpg = function(params) {
     console.log('pdfToJpg');
-    var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -sOutputFile=" +
-                     "-r 150 " +
-                     params.path + params.filename +
+    var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -r 150 " +
+                     "-sOutputFile=" +params.path + params.filename +
                      "%03d.jpg " +
                      params.path + params.filename;
     var promise = new Promise(function(resolve, reject) {
