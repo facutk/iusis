@@ -88,9 +88,9 @@ var compressJpg = function(params) {
    return promise;
 }
 
-var readFileToMemory = function(file) {
+var readFileAsB64 = function(file) {
     var promise = new Promise(function(resolve, reject) {
-        fs.readFile(file, 'utf8', function (err, data) {
+        fs.readFile(file, 'base64', function (err, data) {
             if (err) {
                 return reject(err);
             }
@@ -100,16 +100,16 @@ var readFileToMemory = function(file) {
     return promise;
 }
 
-var loadJpgsToMemory = function(params) {
-    console.log('loadJpgsToMemory');
+var loadJpgsAsB64 = function(params) {
+    console.log('loadJpgsAsB64');
     console.log(params);
     var promise = new Promise(function(resolve, reject) {
 
         Promise.all(params.images.map(function(image) {
-            return readFileToMemory(params.path + image);
+            return readFileAsB64(params.path + image);
         }))
-        .then(function(loadedImages) {
-            params.loadedImages = loadedImages;
+        .then(function(b64images) {
+            params.b64images = b64images;
             resolve(params);
         })
         .catch(function(err) {
@@ -165,14 +165,14 @@ var deleteJpgs = function(params) {
    return promise;
 }
 
-var bundleBase64 = function(params) {
-    console.log('bundleBase64');
+var mapOutput = function(params) {
+    console.log('mapOutput');
     var promise = new Promise(function(resolve, reject) {
 
-        if (params.loadedImages.length === 0) reject('no files converted');
+        if (params.b64images.length === 0) reject('no files converted');
 
-        resolve(params.loadedImages.map(function(loadedImage){
-            return (new Buffer(loadedImage)).toString('base64');
+        resolve(params.b64images.map(function(b64image){
+            return b64image;
         }));
 
    });
@@ -192,10 +192,10 @@ var convert = function(type, path, filename) {
     .then(pdfToJpg)
     .then(listGenJpg)
     .then(compressJpg)
-    .then(loadJpgsToMemory)
+    .then(loadJpgsAsB64)
     .then(deleteOriginalFile)
     .then(deleteJpgs)
-    .then(bundleBase64);
+    .then(mapOutput);
 
 };
 
