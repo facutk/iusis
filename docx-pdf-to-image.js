@@ -23,8 +23,10 @@ var docxToPdf = function(params) {
             return resolve(params); // pass thru
         } else {
 
-            var pandoc_command = "pandoc --template pandoc.latex -s " +
-                params.path + params.filename +
+            var pandoc_command = "pandoc " +
+                "--template pandoc.latex " +
+                "-f docx " +
+                "-s " + params.path + params.filename +
                 " -o " + params.path + params.filename + ".pdf";
 
             console.log(pandoc_command);
