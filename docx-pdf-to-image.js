@@ -6,7 +6,7 @@ var imageminMozjpeg = require('imagemin-mozjpeg');
 
 var typeCheck = function(params) {
     console.log('typeCheck');
-    var supported_types = ['docx', 'pdf'];
+    var supported_types = ['docx', 'doc', 'pdf'];
     var promise = new Promise(function(resolve, reject) {
         if ( supported_types.indexOf(params.type) > -1 ) {
             return resolve(params);
