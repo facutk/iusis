@@ -9,7 +9,7 @@ var typeCheck = function(params) {
     var supported_types = ['docx', 'pdf'];
     var promise = new Promise(function(resolve, reject) {
         if ( supported_types.indexOf(params.type) > -1 ) {
-            resolve(params);
+            return resolve(params);
         }
         reject("file type " + params.type + " not supported");
    });
@@ -20,16 +20,31 @@ var docxToPdf = function(params) {
     console.log('docxToPdf');
     var promise = new Promise(function(resolve, reject) {
         if ( params.type === "pdf" ) {
-            resolve(params); // pass thru
+            return resolve(params); // pass thru
         } else {
-            reject("docx not implemented yet");
-            resolve(params);
+
+            var pandoc_command = "pandoc --template pandoc.latex -s " +
+                params.path + params.filename +
+                " -o " + params.path + params.filename + ".pdf";
+
+            console.log(pandoc_command);
+            exec(pandoc_command, function(err, stdout, stderr) {
+                console.log(stdout);
+                if (err) {
+                    console.log(err);
+                    return reject( err );
+                }
+
+                deleteOriginalFile(params).then(function(success){
+                    params.filename = params.filename + '.pdf';
+                    resolve( params );
+                }).catch(function(error){
+                    reject("could not delete original docx file");
+                });
+
+            });
+
         }
-        /*
-        exec
-            resolve();
-            reject();
-        */
    });
    return promise;
 }
@@ -38,7 +53,7 @@ var pdfToJpg = function(params) {
     console.log('pdfToJpg');
     var gs_command = "gs -dNOPAUSE -sDEVICE=jpeg -dBATCH -q -r150 " +
                      "-dINTERPOLATE " +
-                     "-sOutputFile=" +params.path + params.filename +
+                     "-sOutputFile=" + params.path + params.filename +
                      "%03d.jpg " +
                      params.path + params.filename;
     var promise = new Promise(function(resolve, reject) {
@@ -49,7 +64,7 @@ var pdfToJpg = function(params) {
             console.log(stdout);
             if (err) {
                 console.log(err);
-                reject( err );
+                return reject( err );
             }
             resolve( params );
         });
@@ -67,7 +82,7 @@ var listGenJpg = function(params) {
             console.log('err: ', err);
             console.log('files: ', files);
 
-            if (err) reject(err);
+            if (err) return reject(err);
 
             params.images = files.filter(function(file){
                 // return only files generated from current original file
@@ -143,7 +158,7 @@ var deleteFile = function(file) {
     var promise = new Promise(function(resolve, reject) {
         console.log('delete: ', file);
         fs.unlink(file,function(err){
-            if(err) reject( err );
+            if(err) return reject( err );
 
             resolve( 'deleted' );
         });
@@ -156,7 +171,7 @@ var deleteOriginalFile = function(params) {
     console.log('deleteOriginalFile');
     var promise = new Promise(function(resolve, reject) {
         deleteFile(params.path + params.filename).then(function (msg) {
-            console.log(params);
+            //console.log(params);
             resolve( params );
         }).catch(function(err) {
             reject(err);
@@ -167,7 +182,7 @@ var deleteOriginalFile = function(params) {
 
 var deleteJpgs = function(params) {
     console.log('deleteJpgs');
-    console.log(params);
+    //console.log(params);
     var promise = new Promise(function(resolve, reject) {
 
         Promise.all(params.images.map(function(image) {
@@ -188,7 +203,7 @@ var mapOutput = function(params) {
     console.log('mapOutput');
     var promise = new Promise(function(resolve, reject) {
 
-        if (params.b64images.length === 0) reject('no files converted');
+        if (params.b64images.length === 0) return reject('no files converted');
 
         resolve(params.b64images.map(function(b64image){
             return b64image;
@@ -196,10 +211,6 @@ var mapOutput = function(params) {
 
    });
    return promise;
-}
-
-var handleError = function (error) {
-    console.log(error);
 }
 
 var convert = function(type, path, filename) {
@@ -215,7 +226,6 @@ var convert = function(type, path, filename) {
     .then(deleteOriginalFile)
     .then(deleteJpgs)
     .then(mapOutput);
-
 };
 
 module.exports = {
