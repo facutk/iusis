@@ -61,9 +61,15 @@
     "react-redux": "^4.4.5",
     "react-router": "3.0.0-alpha.3",
     "react-sortable": "^1.1.0",
+<<<<<<< HEAD
     "redux": "^3.6.0",
     "request": "^2.75.0",
     "sass-loader": "^4.0.2",
+=======
+    "redux": "^3.5.2",
+    "request": "^2.75.0",
+    "sass-loader": "^4.0.0",
+>>>>>>> 4adc541e8bd0b00954314d7b62eabc065508fa26
     "semantic-ui-css": "^2.2.4",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
