@@ -25,7 +25,7 @@ var docxToPdf = function(params) {
         } else {
 
             var client = new RequestClient({
-                baseUrl: "https://iusis-soffice.herokuapp.com/",
+                baseUrl: "https://iusis-soffice.herokuapp.com",
                 debugRequest:true,
                 debugResponse:true
             });
@@ -33,7 +33,7 @@ var docxToPdf = function(params) {
                 "file": fs/createReadStream(params.path + params.filename)}, {
                 "headers" : {"Content-Type": "multipart/form-data"}
             }).then(function(data) {
-                console.log(response);
+                console.log(data);
                 resolve(params);
             }).catch(function(err) {
                 console.error(err);
