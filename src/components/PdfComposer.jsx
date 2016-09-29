@@ -104,25 +104,20 @@ class Composer extends React.Component {
                 })
                 .then(result=>result.json())
                 .then(b64Images =>{
-                    console.log(b64Images)
-                    /*
-                    [
-                        {
-                            "converted image": "image data"
-                        }
-                    ]
-                    */
+
                     b64Images.forEach( (b64Image, index) => {
                         var base64Data = 'data:image/jpg;base64,' + b64Image;
                         console.log(base64Data);
                         this.b64toBlob(base64Data, blob => {
+                                debugger;
                                 var url = window.URL.createObjectURL(blob);
                                 console.log(url);
 
                                 this.setState({
                                     files: this.state.files.concat({
                                         name: file.name + ' (' + (index + 1) + '/' + b64Images.length + ')',
-                                        preview: url
+                                        preview: url,
+                                        size: blob.size
                                     })
                                 });
                                 // do something with url
@@ -150,6 +145,7 @@ class Composer extends React.Component {
                 case 'jpeg':
                     images.push(file);
                     break;
+                case 'odt':
                 case 'doc':
                 case 'docx':
                 case 'pdf':
@@ -242,7 +238,7 @@ class Composer extends React.Component {
                 return this.objectURLAsBlob(file.preview).then(blob => { return this.blobAsDataURL(blob) } )
             } ) )
             .then(dataUrls => {
-                let doc = new jsPDF();
+                let doc = new jsPDF("p", "mm", "a4");
                 dataUrls.forEach( (dataUrl, index) => {
                     if (index) doc.addPage();
                     doc.addImage(dataUrl, 'JPEG', 0, 0, 210, 297);

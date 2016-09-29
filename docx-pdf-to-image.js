@@ -7,7 +7,7 @@ var request = require('request');
 
 var typeCheck = function(params) {
     console.log('typeCheck');
-    var supported_types = ['docx', 'doc', 'pdf'];
+    var supported_types = ['odt', 'docx', 'doc', 'pdf'];
     var promise = new Promise(function(resolve, reject) {
         if ( supported_types.indexOf(params.type) > -1 ) {
             return resolve(params);
