@@ -33,8 +33,15 @@ var docxToPdf = function(params) {
                 { "file": fs.createReadStream(params.path + params.filename)},
                 { "headers" : {"Content-Type": "multipart/form-data" } }
             ).then(function(data) {
-                console.log(data);
-                resolve(params);
+                fs.writeFile(params.path + params.filename + ".pdf", data, function (err) {
+                    if (err) {
+                        console.log(err);
+                        return reject( err );
+                    }
+                    console.log("pdf saved");
+                    params.filename = params.filename + ".pdf";
+                    resolve(params);
+                });
             }).catch(function(err) {
                 console.error(err);
                 reject( err );
