@@ -3,6 +3,8 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var multer = require('multer');
 var upload = multer( { dest: '/tmp/' } );
+var exec = require('child_process').exec;
+var fs = require('fs');
 
 var app = express();
 
@@ -17,8 +19,30 @@ app.get('/', function(request, response) {
 
 app.post('/api/convert', upload.single('file'), function(req, res) {
 
-    res.status(200).json(req.file);
-    //res.status(500).json({ error: error });
+    var path = "/tmp/";
+    var filename = req.file.filename;
+    var soffice_command = "soffice --headless --convert-to pdf " +
+        path + filename + " --outdir " + path;
+
+    exec(soffice_command, function(err, stdout, stderr) {
+        console.log(stdout);
+        if (err) {
+            console.log(err);
+            return res.status(500).json(err);
+        }
+        res.sendFile(path + filename + ".pdf", options, function (err) {
+            if (err) {
+                console.log(err);
+                res.status(err.status).end();
+            }
+            else {
+                console.log('Sent:', fileName);
+            }
+            fs.unlink( path + filename );
+            fs.unlink( path + filename  + ".pdf" );
+        });
+
+    });
 
 });
 
