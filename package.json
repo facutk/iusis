@@ -1,26 +1,30 @@
 {
-  "name": "node-js-getting-started",
-  "version": "0.2.5",
-  "description": "A sample Node.js app using Express 4",
+  "name": "iusis-soffice",
+  "version": "0.0.1",
+  "description": "LibreOffice proxy",
   "engines": {
     "node": "5.9.1"
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "ejs": "2.4.1",
-    "express": "4.13.3"
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "4.13.3",
+    "multer": "^1.2.0",
+    "promise": "^7.1.1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/node-js-getting-started"
+    "url": "https://github.com/facutk/iusis"
   },
   "keywords": [
     "node",
     "heroku",
-    "express"
+    "express",
+    "LibreOffice"
   ],
   "license": "MIT"
 }
