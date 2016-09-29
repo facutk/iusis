@@ -3,7 +3,7 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var imagemin = require('imagemin');
 var imageminMozjpeg = require('imagemin-mozjpeg');
-var RequestClient = require("reqclient").RequestClient;
+var request = require('request');
 
 var typeCheck = function(params) {
     console.log('typeCheck');
@@ -24,28 +24,33 @@ var docxToPdf = function(params) {
             return resolve(params); // pass thru
         } else {
 
-            var client = new RequestClient({
-                baseUrl: "https://iusis-soffice.herokuapp.com",
-                debugRequest:true,
-                debugResponse:true
-            });
-            client.post("api/convert",
-                { "file": fs.createReadStream(params.path + params.filename)},
-                { "headers" : {"Content-Type": "multipart/form-data" } }
-            ).then(function(data) {
-                fs.writeFile(params.path + params.filename + ".pdf", data, function (err) {
-                    if (err) {
-                        console.log(err);
-                        return reject( err );
+            var endpoint = 'https://iusis-soffice.herokuapp.com/api/convert';
+            var docx_file = params.path + params.filename;
+            var pdf_file = params.path + params.filename + '.pdf';
+            var secret_token = process.env.soffice_auth_token || 'iusus';
+            request
+            .post({
+                    url: endpoint,
+                    formData: {
+                        auth: secret_token,
+                        file: fs.createReadStream(docx_file),
                     }
-                    console.log("pdf saved");
-                    params.filename = params.filename + ".pdf";
-                    resolve(params);
-                });
-            }).catch(function(err) {
-                console.error(err);
-                reject( err );
-            });
+            }, function (err, response, body) {
+                if (err) {
+                    console.error('upload failed:', err);
+                    return reject( err );
+                }
+            })
+            .on('error', function(err) {
+                console.error('upload failed:', err);
+                return reject( err );
+            })
+            .on('end', function () {
+                console.log('conversion ok');
+                params.filename = params.filename + ".pdf";
+                resolve(params);
+            })
+            .pipe(fs.createWriteStream(pdf_file));
 
         }
    });
