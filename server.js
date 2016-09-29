@@ -30,7 +30,7 @@ app.post('/api/convert', upload.single('file'), function(req, res) {
             console.log(err);
             return res.status(500).json(err);
         }
-        res.sendFile(path + filename + ".pdf", options, function (err) {
+        res.sendFile(path + filename + ".pdf", function (err) {
             if (err) {
                 console.log(err);
                 res.status(err.status).end();
