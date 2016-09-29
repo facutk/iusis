@@ -13,8 +13,7 @@
     "body-parser": "^1.15.2",
     "cors": "^2.8.1",
     "express": "4.13.3",
-    "multer": "^1.2.0",
-    "promise": "^7.1.1"
+    "multer": "^1.2.0"
   },
   "repository": {
     "type": "git",

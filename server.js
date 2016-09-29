@@ -7,6 +7,7 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 
 var app = express();
+var secret_token = process.env.soffice_auth_token || 'iusus';
 
 app.set('port', (process.env.PORT || 5000));
 app.use(cors());
@@ -18,6 +19,14 @@ app.get('/', function(request, response) {
 });
 
 app.post('/api/convert', upload.single('file'), function(req, res) {
+
+    var secret_token = process.env.soffice_auth_token || 'iusus';
+
+    if (req.body.auth != secret_token) {
+        console.log('wrong auth!');
+        fs.unlink(__dirname + '/' + req.file.filename);
+        return res.status(403).json({ error: 'wrong auth token'}).end();
+    }
 
     var path = "/tmp";
     var filename = req.file.filename;
@@ -31,13 +40,8 @@ app.post('/api/convert', upload.single('file'), function(req, res) {
             return res.status(500).json(err);
         }
         res.sendFile(path + '/' + filename + ".pdf", function (err) {
-            if (err) {
-                console.log(err);
-                res.status(err.status).end();
-            }
-            else {
-                console.log('Sent:', path + '/' + filename);
-            }
+            console.log('Sent:', path + '/' + filename);
+
             fs.unlink( path + '/' + filename );
             fs.unlink( path + '/' + filename  + ".pdf" );
         });
@@ -51,5 +55,5 @@ app.use('*',function(req,res){
 });
 
 app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+    console.log('Node app is running on port', app.get('port'));
 });
