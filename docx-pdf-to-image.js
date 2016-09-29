@@ -29,10 +29,10 @@ var docxToPdf = function(params) {
                 debugRequest:true,
                 debugResponse:true
             });
-            client.post("/api/convert", {
-                "file": fs/createReadStream(params.path + params.filename)}, {
-                "headers" : {"Content-Type": "multipart/form-data"}
-            }).then(function(data) {
+            client.post("/api/convert",
+                { "file": fs.createReadStream(params.path + params.filename)},
+                { "headers" : {"Content-Type": "multipart/form-data" } }
+            ).then(function(data) {
                 console.log(data);
                 resolve(params);
             }).catch(function(err) {
