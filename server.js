@@ -19,10 +19,10 @@ app.get('/', function(request, response) {
 
 app.post('/api/convert', upload.single('file'), function(req, res) {
 
-    var path = "/tmp/";
+    var path = "/tmp";
     var filename = req.file.filename;
     var soffice_command = "soffice --headless --convert-to pdf " +
-        path + filename + " --outdir " + path;
+        path + '/' + filename + " --outdir " + path;
 
     exec(soffice_command, function(err, stdout, stderr) {
         console.log(stdout);
@@ -30,16 +30,16 @@ app.post('/api/convert', upload.single('file'), function(req, res) {
             console.log(err);
             return res.status(500).json(err);
         }
-        res.sendFile(path + filename + ".pdf", function (err) {
+        res.sendFile(path + '/' + filename + ".pdf", function (err) {
             if (err) {
                 console.log(err);
                 res.status(err.status).end();
             }
             else {
-                console.log('Sent:', fileName);
+                console.log('Sent:', path + '/' + filename);
             }
-            fs.unlink( path + filename );
-            fs.unlink( path + filename  + ".pdf" );
+            fs.unlink( path + '/' + filename );
+            fs.unlink( path + '/' + filename  + ".pdf" );
         });
 
     });
