@@ -3,6 +3,7 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var imagemin = require('imagemin');
 var imageminMozjpeg = require('imagemin-mozjpeg');
+var RequestClient = require("reqclient").RequestClient;
 
 var typeCheck = function(params) {
     console.log('typeCheck');
@@ -23,27 +24,20 @@ var docxToPdf = function(params) {
             return resolve(params); // pass thru
         } else {
 
-            var pandoc_command = "pandoc " +
-                "--template pandoc.latex " +
-                "-f docx " +
-                "-s " + params.path + params.filename +
-                " -o " + params.path + params.filename + ".pdf";
-
-            console.log(pandoc_command);
-            exec(pandoc_command, function(err, stdout, stderr) {
-                console.log(stdout);
-                if (err) {
-                    console.log(err);
-                    return reject( err );
-                }
-
-                deleteOriginalFile(params).then(function(success){
-                    params.filename = params.filename + '.pdf';
-                    resolve( params );
-                }).catch(function(error){
-                    reject("could not delete original docx file");
-                });
-
+            var client = new RequestClient({
+                baseUrl: "https://iusis-soffice.herokuapp.com/",
+                debugRequest:true,
+                debugResponse:true
+            });
+            client.post("/api/convert", {
+                "file": fs/createReadStream(params.path + params.filename)}, {
+                "headers" : {"Content-Type": "multipart/form-data"}
+            }).then(function(data) {
+                console.log(response);
+                resolve(params);
+            }).catch(function(err) {
+                console.error(err);
+                reject( err );
             });
 
         }
@@ -162,23 +156,30 @@ var deleteFile = function(file) {
     var promise = new Promise(function(resolve, reject) {
         console.log('delete: ', file);
         fs.unlink(file,function(err){
-            if(err) return reject( err );
-
+            //if(err) return reject( err );
             resolve( 'deleted' );
         });
-
    });
    return promise;
 }
 
-var deleteOriginalFile = function(params) {
-    console.log('deleteOriginalFile');
+var deleteDocx = function(params) {
+    console.log('deleteDocx');
+    var promise = new Promise(function(resolve, reject) {
+        deleteFile(params.path + params.filename).then(function (msg) {
+            params.filename = params.filename + '.pdf';
+            resolve( params );
+        });
+   });
+   return promise;
+}
+
+var deletePdf = function(params) {
+    console.log('deletePdf');
     var promise = new Promise(function(resolve, reject) {
         deleteFile(params.path + params.filename).then(function (msg) {
             resolve( params );
-        }).catch(function(err) {
-            reject(err);
-        })
+        });
    });
    return promise;
 }
@@ -221,11 +222,12 @@ var convert = function(type, path, filename) {
         path: path,
         filename: filename
     }).then(docxToPdf)
+    .then(deleteDocx)
     .then(pdfToJpg)
+    .then(deletePdf)
     .then(listGenJpg)
     .then(compressJpg)
     .then(loadJpgsAsB64)
-    .then(deleteOriginalFile)
     .then(deleteJpgs)
     .then(mapOutput);
 };
