@@ -222,12 +222,12 @@ var convert = function(type, path, filename) {
         path: path,
         filename: filename
     }).then(docxToPdf)
-    .then(deleteDocx)
     .then(pdfToJpg)
-    .then(deletePdf)
     .then(listGenJpg)
     .then(compressJpg)
     .then(loadJpgsAsB64)
+    .then(deleteDocx)
+    .then(deletePdf)
     .then(deleteJpgs)
     .then(mapOutput);
 };
