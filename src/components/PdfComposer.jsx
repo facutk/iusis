@@ -88,7 +88,7 @@ class Composer extends React.Component {
     }
 
     convert = (files) => {
-        console.log(files);
+        //console.log(files);
 
         files.forEach( file => {
             this.objectURLAsBlob(file.preview).then( blob => {
@@ -258,15 +258,41 @@ class Composer extends React.Component {
         }
     }
 
+    handleDrop = (event) => {
+        event.preventDefault();
+    }
+
+    handleDragover = (event) => {
+        event.preventDefault();
+    }
+
+    componentWillMount = () => {
+        document.addEventListener('drop', this.handleDrop);
+        window.addEventListener('dragover', this.handleDragover);
+    }
+
+    componentWillUnmount  = () => {
+        document.removeEventListener('drop', this.handleDrop);
+        window.removeEventListener('dragover', this.handleDragover);
+    }
+
     render() {
+        var divStyle = {
+            backgroundColor: this.state.hovering?'red':'white'
+        };
         return (
             <div className="pdf-composer">
                 <div className="ui centered card">
                     <div className="ui">
                         <Dropzone
-                            className="dropzone"
+                            className={"dropzone " + 'active'}
                             onDrop={this.onFileDrop}>
-                            <div>Arrastra imagenes, o hace click para formar el PDF.</div>
+                            <div>Hacé click o arrastrá archivos</div>
+                            <ul>
+                                <li>.docx</li>
+                                <li>.pdf</li>
+                                <li>.jpg</li>
+                            </ul>
                         </Dropzone>
                     </div>
                     <div className="content ui mini transparent input">

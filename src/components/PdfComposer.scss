@@ -1,7 +1,9 @@
 .pdf-composer {
     .dropzone {
         width: 100%;
-        height: 200px;
+        min-height: 200px;
+        padding: 1em;
+        color: #666;
     }
     .content > span {
         word-wrap: break-word;
