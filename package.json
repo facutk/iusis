@@ -61,6 +61,7 @@
     "react-redux": "^4.4.5",
     "react-router": "3.0.0-alpha.3",
     "react-sortable": "^1.1.0",
+    "react-ui-tree": "^2.5.0",
     "redux": "^3.6.0",
     "request": "^2.75.0",
     "sass-loader": "^4.0.2",
