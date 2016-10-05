@@ -4,7 +4,6 @@ import jsPDF from 'jspdf';
 import { Sortable } from 'react-sortable';
 import { dispatch } from 'redux';
 import { connect } from 'react-redux';
-import './PdfComposer.scss';
 import TreeDisplay from './TreeDisplay';
 
 
@@ -101,6 +100,7 @@ class Composer extends React.Component {
                 formData.append('file', blob);
                 formData.append('type', file.name.split('.').pop()); // is this needed?
 
+                this.props.onFetchStart();
                 fetch('/api/convert', {
                     method: 'POST',
                     body: formData
@@ -112,7 +112,7 @@ class Composer extends React.Component {
                         var base64Data = 'data:image/jpg;base64,' + b64Image;
                         console.log(base64Data);
                         this.b64toBlob(base64Data, blob => {
-                                debugger;
+
                                 var url = window.URL.createObjectURL(blob);
                                 console.log(url);
 
@@ -128,9 +128,11 @@ class Composer extends React.Component {
                                 // handle error
                             });
                     });
-
-                }).catch(error=>{
+                    this.props.onFetchEnd();
+                })
+                .catch(error=>{
                     console.log(error);
+                    this.props.onFetchEnd();
                 });
 
             });
@@ -280,7 +282,7 @@ class Composer extends React.Component {
     }
     //<TreeDisplay />
     render() {
-
+        const {loading} = this.props;
         return (
             <div className="pdf-composer">
 
@@ -289,6 +291,9 @@ class Composer extends React.Component {
                         <Dropzone
                             className="dropzone"
                             onDrop={this.onFileDrop}>
+
+                            <div className={"ui inline loader " + (loading?'active':'') } ></div>
+
                             <div>Hacé click o arrastrá archivos</div>
                             <ul>
                                 <li>.docx</li>
@@ -327,9 +332,10 @@ class Composer extends React.Component {
 
 const mapStateToComposerProps = (state) => {
     return {
-
+        loading: state.fetchCount > 0
     }
 }
+import { incFetchCount, decFetchCount } from '../actions';
 const mapDispatchToComposerProps = (dispatch) => {
     return {
         onMaxSizeChange: (maxSize) => {
@@ -337,7 +343,9 @@ const mapDispatchToComposerProps = (dispatch) => {
                 type: 'PDF_MAX_SIZE',
                 maxSize: maxSize
             })
-        }
+        },
+        onFetchStart: () => dispatch(incFetchCount()),
+        onFetchEnd: () => dispatch(decFetchCount())
     }
 }
 const VisibleComposer = connect(

@@ -426,6 +426,14 @@ class TreeDisplay extends React.Component {
     render() {
         return (
             <div className="tree">
+                <h1>I U S I S</h1>
+                <div className="ui divider"></div>
+                <div className="fluid ui buttons">
+                    <button className="ui teal button"><i className="download icon"></i> Generar PDF</button>
+                    <button className="ui red cancel button"><i className="trash icon"></i>Limpiar</button>
+                    <button className="ui button"><i className="setting icon"></i></button>
+                </div>
+                <div className="ui divider"></div>
                 <Tree
                     paddingLeft={20}
                     tree={this.state.tree}

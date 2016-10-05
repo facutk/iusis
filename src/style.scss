@@ -1,3 +1,22 @@
+body {
+    background-color: #fcfcfc;
+}
+
+.ui.header  {
+    background-color: #2185d0;
+    color: #fff;
+    padding: 0.5em;
+    margin-bottom: 1em;
+}
+
+.footer {
+    background-color: #333;
+    color: white;
+    margin-top: 6em;
+    padding: 2em;
+}
+
+
 .pdf-composer {
     .dropzone {
         width: 100%;
@@ -69,10 +88,10 @@
 
 .tree {
     position: fixed;
-    top: 3.1em;
+    top: 0;
     left: 0;
     bottom: 0;
-    width: 300px;
+    width: 320px;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #21252B;

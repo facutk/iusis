@@ -10,3 +10,24 @@ export const toggleTodo = (id) => ({
     type: 'TOGGLE_TODO',
     id
 });
+
+export const setMessage = (message) => ({
+    type: 'SET_MESSAGE',
+    message
+});
+
+export const setHeader = (header) => ({
+    type: 'SET_HEADER',
+    header
+});
+
+
+export const incFetchCount = () => ({
+    type: 'INC_FETCH_COUNT',
+    count: 1
+});
+
+export const decFetchCount = () => ({
+    type: 'DEC_FETCH_COUNT',
+    count: 1
+});

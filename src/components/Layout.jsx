@@ -1,14 +1,6 @@
 import React from 'react';
+import Header from './Header.jsx';
 import PdfComposer from './PdfComposer.jsx';
-import './Layout.scss';
-
-const Header = function() {
-    return (
-        <div className="ui header nav">
-            <h1>I U S I S</h1>
-        </div>
-    );
-}
 
 const Footer = function() {
     return (
@@ -17,6 +9,34 @@ const Footer = function() {
         </div>
     );
 }
+
+import {connect} from 'react-redux';
+const RdxMsg = ({message = ''}) => {
+    return (
+        <h1>{message}</h1>
+    )
+}
+const mapStateToProps = (state) => {
+    return {
+        message: state.message
+    }
+}
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        /*
+        onClick: () => {
+            dispatch(setVisibilityFilter(ownProps.filter))
+        }
+        */
+    }
+}
+
+const VisibleRdxMsg = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(RdxMsg);
+
+
 
 const Layout = function() {
     var img = new Image();
@@ -38,11 +58,14 @@ const Layout = function() {
     return (
         <div>
             <Header />
+            <VisibleRdxMsg />
             <div className="ui main text container">
                 <PdfComposer />
             </div>
         </div>
     );
 }
+
+
 
 export default Layout;
