@@ -1,7 +1,7 @@
 import React from 'react';
 
 const initialTree = {
-    module: 'PDF',
+    module: 'PDF', collapsed: true,
     children: [{
         module: 'dist',
         collapsed: true,
@@ -69,6 +69,9 @@ const initialTree = {
         leaf: true
     }]
 };
+
+
+
 
 class Node extends React.Component {
 
@@ -180,9 +183,11 @@ class Tree extends React.Component {
         tree.renderNode = props.renderNode;
         tree.changeNodeCollapsed = props.changeNodeCollapsed;
         tree.updateNodesPosition();
+        const treeV2 = props.treeV2;
 
         return {
             tree: tree,
+            treeV2: treeV2,
             dragging: {
                 id: null,
                 x: null,
@@ -379,7 +384,6 @@ class Tree extends React.Component {
         const index = tree.getIndex(nodeId);
         const node = index.node;
         node.collapsed = !node.collapsed;
-        tree.updateNodesPosition();
 
         this.setState({
             tree: tree
@@ -391,12 +395,85 @@ class Tree extends React.Component {
 
 }
 
+const NewNode = ({
+    tree,
+    id,
+    onToggleCollapse,
+    onToggleActiveNode
+}) => {
+    const {children, module, collapsed, active} = tree[id]
+    return (
+        <div className='m-node'>
+            <div className='inner'>
+                {children.length===0 ? '':(
+                    <span
+                        className={'collapse ' + (collapsed ? 'caret-right' : 'caret-down')}
+                        onMouseDown={(e)=>e.stopPropagation()}
+                        onClick={onToggleCollapse.bind(null, id)}
+                    ></span>
+                )}
+
+                <span
+                    className={'node ' + (active ? 'is-active' : '')}
+                    onClick={onToggleActiveNode.bind(null, id)}
+                >
+                    {module}
+                </span>
+                {collapsed ? '' : children.map(childId =>
+                    <NewNode
+                        tree={tree}
+                        id={childId}
+                        key={childId}
+                        onToggleCollapse={onToggleCollapse}
+                        onToggleActiveNode={onToggleActiveNode}
+                    />
+                )}
+
+            </div>
+        </div>
+    )
+}
+const NewTree = ({
+    tree,
+    onToggleCollapse,
+    onToggleActiveNode
+}) => {
+    return (
+        <NewNode
+            className='tree'
+            tree={tree}
+            id={0}
+            onToggleCollapse={onToggleCollapse}
+            onToggleActiveNode={onToggleActiveNode}
+        />
+    )
+}
+
+const mapStateToProps = (state) => {
+    return {
+        tree: state.tree
+    }
+}
+import {toggleCollapsedNode, toggleActiveNode} from '../actions';
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        onToggleCollapse: (nodeId) => {
+            dispatch(toggleCollapsedNode(nodeId))
+        },
+        onToggleActiveNode: (nodeId) => {
+            dispatch(toggleActiveNode(nodeId))
+        }
+    }
+}
+import { connect } from 'react-redux';
+const SortableTree = connect(mapStateToProps,mapDispatchToProps)(NewTree);
+
 class TreeDisplay extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
             active: null,
-            tree: initialTree
+            tree: initialTree,
         }
     }
 
@@ -437,10 +514,12 @@ class TreeDisplay extends React.Component {
                 <Tree
                     paddingLeft={20}
                     tree={this.state.tree}
+                    treeV2={this.state.treeV2}
                     onChange={this.handleChange}
                     isNodeCollapsed={this.isNodeCollapsed}
                     renderNode={this.renderNode}
                 />
+                <SortableTree />
             </div>
         )
     }

@@ -56,6 +56,8 @@ body {
 }
 
 .m-node {
+    padding-left: 20px;
+
     &.placeholder > * {
         visibility: hidden;
     }
@@ -87,6 +89,7 @@ body {
 
 
 .tree {
+    color: white;
     position: fixed;
     top: 0;
     left: 0;

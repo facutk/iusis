@@ -280,11 +280,11 @@ class Composer extends React.Component {
         document.removeEventListener('drop', this.handleDrop);
         window.removeEventListener('dragover', this.handleDragover);
     }
-    //<TreeDisplay />
     render() {
         const {loading} = this.props;
         return (
             <div className="pdf-composer">
+                { (process.env.NODE_ENV != 'production')? <TreeDisplay /> : null }
 
                 <div className="ui centered card">
                     <div className="ui">
