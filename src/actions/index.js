@@ -37,3 +37,9 @@ export const toggleActiveNode = (nodeId) => ({
     type: 'TOGGLE_ACTIVE_NODE',
     nodeId
 })
+
+export const onNodeMove = (sourceId, destinationId) => ({
+    type: 'ON_NODE_MOVE',
+    sourceId,
+    destinationId
+})

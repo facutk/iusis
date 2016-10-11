@@ -42,6 +42,24 @@ const tree = (state = defaultTree2, action) => {
                     collapsed: !state[action.nodeId].collapsed
                 }
             }
+        case 'ON_NODE_MOVE':
+            const findParent = (nodeId, tree) => {
+                for (const id of Object.keys(tree)) {
+                    if ( tree[id].children.indexOf(nodeId) > -1 ) return id;
+                }
+                return 0;
+            }
+
+            const parentFrom = findParent(action.sourceId, state)
+            const parentTo = findParent(action.destinationId, state)
+            const newFrom = state[parentFrom].children.filter( childId => {
+                return childId != action.sourceId
+            })
+
+            console.log( newChildren, action.sourceId, state[parentTo].children, action.destinationId )
+
+            //console.log(action.sourceId, action.destinationId)
+            return state
         default:
             return state
     }

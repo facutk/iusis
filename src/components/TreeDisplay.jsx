@@ -395,80 +395,14 @@ class Tree extends React.Component {
 
 }
 
-const NewNode = ({
-    tree,
-    id,
-    onToggleCollapse,
-    onToggleActiveNode
-}) => {
-    const {children, module, collapsed, active} = tree[id]
-    return (
-        <div className='m-node'>
-            <div className='inner'>
-                {children.length===0 ? '':(
-                    <span
-                        className={'collapse ' + (collapsed ? 'caret-right' : 'caret-down')}
-                        onMouseDown={(e)=>e.stopPropagation()}
-                        onClick={onToggleCollapse.bind(null, id)}
-                    ></span>
-                )}
-
-                <span
-                    className={'node ' + (active ? 'is-active' : '')}
-                    onClick={onToggleActiveNode.bind(null, id)}
-                >
-                    {module}
-                </span>
-                {collapsed ? '' : children.map(childId =>
-                    <NewNode
-                        tree={tree}
-                        id={childId}
-                        key={childId}
-                        onToggleCollapse={onToggleCollapse}
-                        onToggleActiveNode={onToggleActiveNode}
-                    />
-                )}
-
-            </div>
-        </div>
-    )
-}
-const NewTree = ({
-    tree,
-    onToggleCollapse,
-    onToggleActiveNode
-}) => {
-    return (
-        <NewNode
-            className='tree'
-            tree={tree}
-            id={0}
-            onToggleCollapse={onToggleCollapse}
-            onToggleActiveNode={onToggleActiveNode}
-        />
-    )
-}
-
-const mapStateToProps = (state) => {
-    return {
-        tree: state.tree
-    }
-}
-import {toggleCollapsedNode, toggleActiveNode} from '../actions';
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    onToggleCollapse: (nodeId) => {
-        dispatch(toggleCollapsedNode(nodeId))
-    },
-    onToggleActiveNode: (nodeId) => {
-        dispatch(toggleActiveNode(nodeId))
-    }
-})
-
-import { connect } from 'react-redux';
-const SortableTree = connect(mapStateToProps,mapDispatchToProps)(NewTree);
 
 
 
+
+
+/*
+    Simple Drag & Drop
+*/
 
 
 import { DragSource } from 'react-dnd';
@@ -495,20 +429,18 @@ const boxSource = {
     const dropResult = monitor.getDropResult();
 
     if (dropResult) {
-      window.alert( // eslint-disable-line no-alert
+      console.log( // eslint-disable-line no-alert
         `You dropped ${item.name} into ${dropResult.name}!`
       );
     }
   }
 };
 
-@DragSource('box', boxSource, (connect, monitor) => ({
+@DragSource('node', boxSource, (connect, monitor) => ({
   connectDragSource: connect.dragSource(),
   isDragging: monitor.isDragging()
 }))
 class Box extends React.Component {
-
-
   render() {
     const { isDragging, connectDragSource } = this.props;
     const { name } = this.props;
@@ -541,18 +473,16 @@ const style2 = {
 
 const boxTarget = {
   drop() {
-    return { name: 'Dustbin' };
+    return { id: 'Dustbin' };
   }
 };
 
-@DropTarget('box', boxTarget, (connect, monitor) => ({
+@DropTarget('node', boxTarget, (connect, monitor) => ({
   connectDropTarget: connect.dropTarget(),
   isOver: monitor.isOver(),
   canDrop: monitor.canDrop()
 }))
 class Dustbin extends React.Component {
-
-
   render() {
     const { canDrop, isOver, connectDropTarget } = this.props;
     const isActive = canDrop && isOver;
@@ -581,7 +511,9 @@ class Dustbin extends React.Component {
 
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+/*
 @DragDropContext(HTML5Backend)
+*/
 class Container extends React.Component {
   render() {
     return (
@@ -599,6 +531,50 @@ class Container extends React.Component {
   }
 }
 
+
+
+import NewNode from './NewNode';
+
+
+const NewTree = ({
+    tree,
+    onToggleCollapse,
+    onToggleActiveNode,
+    onNodeMove
+}) => {
+    return (
+        <NewNode
+            className='tree'
+            tree={tree}
+            id={0}
+            onMove={onNodeMove}
+            onToggleCollapse={onToggleCollapse}
+            onToggleActiveNode={onToggleActiveNode}
+        />
+    )
+}
+
+const mapStateToProps = (state) => {
+    return {
+        tree: state.tree
+    }
+}
+import {toggleCollapsedNode, toggleActiveNode, onNodeMove } from '../actions';
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    onToggleCollapse: (nodeId) => {
+        dispatch(toggleCollapsedNode(nodeId))
+    },
+    onToggleActiveNode: (nodeId) => {
+        dispatch(toggleActiveNode(nodeId))
+    },
+    onNodeMove: (sourceId, destinationId) => {
+        dispatch(onNodeMove(sourceId, destinationId))
+    }
+})
+
+import { connect } from 'react-redux';
+const SortableTree = connect(mapStateToProps, mapDispatchToProps)(NewTree);
+@DragDropContext(HTML5Backend)
 class TreeDisplay extends React.Component {
     constructor(props, context) {
         super(props, context);
