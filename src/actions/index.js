@@ -11,11 +11,6 @@ export const toggleTodo = (id) => ({
     id
 });
 
-export const setMessage = (message) => ({
-    type: 'SET_MESSAGE',
-    message
-});
-
 export const setHeader = (header) => ({
     type: 'SET_HEADER',
     header

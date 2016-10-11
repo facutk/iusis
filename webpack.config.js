@@ -40,6 +40,7 @@ module.exports = {
         extensions: ['', '.js', '.jsx'],
         alias: {
             'semantic-ui': path.join(__dirname, "node_modules", "semantic-ui-css", "semantic.min.css"),
+            'jspdf': path.join(__dirname, "node_modules", "jspdf", "dist", "jspdf.debug.js")
         }
     },
     devServer: {
