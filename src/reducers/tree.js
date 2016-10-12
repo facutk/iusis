@@ -5,7 +5,7 @@ const defaultTree = {
 const defaultTree2 = {
     0: { id: 0, module: 'PDF', children: [1, 6, 11, 12, 13, 14, 15, 16, 17] },
     1: { id: 1, module: 'dist', children: [2, 3, 4, 5], collapsed: true },
-    2: { id: 2, module: 'node.js', children: [] },
+    2: { id: 2, module: 'action.js', children: [] },
     3: { id: 3, module: 'react-ui-tree.css', children: [] },
     4: { id: 4, module: 'react-ui-tree.js', children: [] },
     5: { id: 5, module: 'tree.js', children: [] },
@@ -50,13 +50,53 @@ const tree = (state = defaultTree2, action) => {
                 return 0;
             }
 
+            // delete node
             const parentFrom = findParent(action.sourceId, state)
-            const parentTo = findParent(action.destinationId, state)
             const newFrom = state[parentFrom].children.filter( childId => {
                 return childId != action.sourceId
             })
 
-            console.log( newChildren, action.sourceId, state[parentTo].children, action.destinationId )
+            const newStateNodeRemoved = Object.keys(state).reduce( (reducedTree, nodeId) => {
+                reducedTree[nodeId] = {
+                    ...state[nodeId],
+                    children: state[nodeId].children.filter( childId => {
+                        return childId != action.sourceId
+                    })
+                }
+                return reducedTree
+            }, {})
+            //return newStateNodeRemoved
+
+            //console.log(newStateNodeRemoved)
+
+            // insert node
+            let parentTo = 0
+            let newToIndex = 0
+            if ( newStateNodeRemoved[action.destinationId].children.length ) {
+                parentTo = action.destinationId
+                newToIndex = 0
+            } else {
+                parentTo = findParent(action.destinationId, newStateNodeRemoved)
+                newToIndex = newStateNodeRemoved[parentTo].children.indexOf(action.destinationId) + 1
+            }
+
+            const newTo = [
+                ...newStateNodeRemoved[parentTo].children.slice(0, newToIndex),
+                action.sourceId,
+                ...newStateNodeRemoved[parentTo].children.slice(newToIndex, newStateNodeRemoved[parentTo].children.length)
+            ]
+
+            const newStateNodeAdded = Object.keys(newStateNodeRemoved).reduce( (reducedTree, nodeId) => {
+                reducedTree[nodeId] = {
+                    ...newStateNodeRemoved[nodeId],
+                    children: (nodeId == parentTo) ? newTo : newStateNodeRemoved[nodeId].children
+                }
+                return reducedTree
+            }, {})
+            //console.log( newStateNodeAdded )
+            return newStateNodeAdded
+            //console.log(newTo)
+            //console.log( newFrom, action.sourceId, state[parentTo].children, action.destinationId, newToIndex, newTo )
 
             //console.log(action.sourceId, action.destinationId)
             return state

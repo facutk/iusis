@@ -26,9 +26,9 @@ const boxTarget = {
         const dragId = monitor.getItem().id;
         const hoverId = props.id;
         if ( !monitor.isOver({ shallow: true }) ) return
-
+        if ( !dragId ) return
         // Don't replace items with themselves
-        if (dragId === hoverId) {
+        if (dragId == hoverId) {
             return;
         }
 
