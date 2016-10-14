@@ -122,11 +122,6 @@ class Container extends React.Component {
         <div style={{ overflow: 'hidden', clear: 'both' }}>
           <Dustbin />
         </div>
-        <div style={{ overflow: 'hidden', clear: 'both' }}>
-          <Box name='Glass' />
-          <Box name='Banana' />
-          <Box name='Paper' />
-        </div>
       </div>
     );
   }
@@ -143,6 +138,28 @@ const NewTree = ({
     onToggleActiveNode,
     onNodeMove
 }) => {
+    //console.log(tree)
+    /*
+    const printNode = (tree, nodeId, depth) => {
+        let spaces = ''
+        for (let i = 0; i < depth; i++) spaces = spaces + '    '
+
+        console.log( spaces + tree[nodeId].module)
+        tree[nodeId].children.map(childId => {
+            printNode(tree, childId, depth + 1)
+        })
+    }
+    printNode(tree, 0, 0)
+    */
+
+    const treeToList = (tree, nodeId, depth) => {
+        return [nodeId].concat(...tree[nodeId].children.map(childId => {
+                    return treeToList(tree, childId, depth + 1)
+                }))
+    }
+    const treeAsList = treeToList(tree, 0, 0)
+    console.log(treeAsList)
+
     return (
         <NewNode
             className='tree'
@@ -180,7 +197,7 @@ class TreeDisplay extends React.Component {
     constructor(props, context) {
         super(props, context);
     }
-    
+
     render() {
         return (
             <div className="tree">

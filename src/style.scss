@@ -18,12 +18,26 @@ body {
 
 
 .pdf-composer {
+
     .dropzone {
         width: 100%;
         min-height: 200px;
         padding: 1em;
         color: #666;
     }
+    .dropzone.fullpage {
+        position: fixed;
+        background-color: #fff;
+        border: 5px dashed #eee;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        z-index: 2;
+    }
+
     .content > span {
         word-wrap: break-word;
     }
@@ -86,6 +100,7 @@ body {
         content: '\25BE';
     }
 }
+
 
 
 .tree {

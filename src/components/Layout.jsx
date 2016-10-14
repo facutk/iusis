@@ -22,5 +22,4 @@ const Layout = function() {
 }
 
 
-
 export default Layout;

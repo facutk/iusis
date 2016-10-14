@@ -43,3 +43,10 @@ export const onNodeMove = (sourceId, destinationId) => ({
     sourceId,
     destinationId
 })
+
+export const onNodeAdd = (parentNodeId, nodeId, nodeData) => ({
+    type: 'ON_NODE_ADD',
+    parentNodeId,
+    nodeId,
+    nodeData
+})

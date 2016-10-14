@@ -100,6 +100,26 @@ const tree = (state = defaultTree2, action) => {
 
             //console.log(action.sourceId, action.destinationId)
             return state
+        case 'ON_NODE_ADD':
+            //console.log( action )
+            //console.log(state)
+            const newState = Object.keys(state).reduce( (reducedTree, nodeId) => {
+                reducedTree[nodeId] = {
+                    ...state[nodeId],
+                    children: (nodeId == action.parentNodeId) ?
+                        state[nodeId].children.concat(action.nodeId) :
+                        state[nodeId].children
+                }
+                return reducedTree
+            }, {})
+            //console.log( newState )
+
+            newState[action.nodeId] = {
+                id: action.nodeId,
+                module: action.nodeData.name,
+                children: []
+            }
+            return newState
         default:
             return state
     }

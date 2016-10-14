@@ -5,7 +5,7 @@ import { Sortable } from 'react-sortable';
 import { dispatch } from 'redux';
 import { connect } from 'react-redux';
 import TreeDisplay from './TreeDisplay';
-
+import { v4 } from 'node-uuid';
 
 
 const PreviewContent = function(props) {
@@ -66,7 +66,8 @@ class Composer extends React.Component {
         this.state = {
             files: [],
             maxSize: '',
-            draggingIndex: null
+            draggingIndex: null,
+            draggingFiles: false
         };
     }
 
@@ -82,7 +83,7 @@ class Composer extends React.Component {
 
             var ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-            console.log('image loaded!', canvas)
+            //console.log('image loaded!', canvas)
             canvas.toBlob(onsuccess, "image/jpeg", 0.95);
         };
 
@@ -93,9 +94,17 @@ class Composer extends React.Component {
         //console.log(files);
 
         files.forEach( file => {
+            //console.log( file.name, v4() )
+            const newFileNodeId = v4()
+            const newNodeData = {
+                name: file.name
+            }
+            //console.log(this.props)
+            this.props.onNodeAdd(0, newFileNodeId, newNodeData)
+
             this.objectURLAsBlob(file.preview).then( blob => {
 
-                console.log(blob);
+                //console.log(blob);
                 let formData = new FormData()
                 formData.append('file', blob);
                 formData.append('type', file.name.split('.').pop()); // is this needed?
@@ -108,13 +117,15 @@ class Composer extends React.Component {
                 .then(result=>result.json())
                 .then(b64Images =>{
 
+                    //setTimeout(()=>{}, 2000)
+
                     b64Images.forEach( (b64Image, index) => {
                         var base64Data = 'data:image/jpg;base64,' + b64Image;
-                        console.log(base64Data);
+                        //console.log(base64Data);
                         this.b64toBlob(base64Data, blob => {
 
                                 var url = window.URL.createObjectURL(blob);
-                                console.log(url);
+                                //console.log(url);
 
                                 this.setState({
                                     files: this.state.files.concat({
@@ -123,6 +134,12 @@ class Composer extends React.Component {
                                         size: blob.size
                                     })
                                 });
+
+                                const newNodeData = {
+                                    name: (index + 1).toString()
+                                }
+                                //console.log(this.props)
+                                this.props.onNodeAdd(newFileNodeId, v4(), newNodeData)
                                 // do something with url
                             }, error => {
                                 // handle error
@@ -141,7 +158,9 @@ class Composer extends React.Component {
     }
 
     onFileDrop = (files) => {
-
+        this.setState({
+            draggingFiles: false
+        })
         let images = [];
         let toConvert = [];
         files.forEach( file => {
@@ -267,21 +286,47 @@ class Composer extends React.Component {
         event.preventDefault();
     }
 
+    handleDragLeave = (event) => {
+        event.preventDefault();
+    }
+
     handleDragover = (event) => {
         event.preventDefault();
+
+        const containsFiles = (event) => {
+            if (event.dataTransfer.types) {
+                for (var i = 0; i < event.dataTransfer.types.length; i++) {
+                    if (event.dataTransfer.types[i] == "Files") {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+
+        if ( containsFiles(event) ) {
+            this.setState({
+                draggingFiles: true
+            })
+        }
+
     }
 
     componentWillMount = () => {
         document.addEventListener('drop', this.handleDrop);
         window.addEventListener('dragover', this.handleDragover);
+        window.addEventListener('dragleave', this.handleDragLeave);
     }
 
     componentWillUnmount  = () => {
         document.removeEventListener('drop', this.handleDrop);
         window.removeEventListener('dragover', this.handleDragover);
+        window.removeEventListener('dragleave', this.handleDragLeave);
     }
     render() {
         const {loading} = this.props;
+        //<div className="ui dimmer active"></div>
+
         return (
             <div className="pdf-composer">
                 { (process.env.NODE_ENV != 'production')? <TreeDisplay /> : null }
@@ -289,19 +334,42 @@ class Composer extends React.Component {
                 <div className="ui centered card">
                     <div className="ui">
                         <Dropzone
-                            className="dropzone"
+                            onDragOver={(e) => {
+                                console.log(e)
+                            }}
+                            className={'dropzone ' + (this.state.draggingFiles ? 'fullpage': '')}
                             onDrop={this.onFileDrop}>
 
                             <div className={"ui inline loader " + (loading?'active':'') } ></div>
 
-                            <div>Hacé click o arrastrá archivos</div>
-                            <ul>
-                                <li>.docx</li>
-                                <li>.pdf</li>
-                                <li>.jpg</li>
-                            </ul>
+                            {this.state.draggingFiles ? (
+                                <div>
+                                    <span>Solta aquí los archivos</span>
+                                    <p>
+                                        <small>
+                                            <a href="#"
+                                                onClick={(event)=>{
+                                                    event.stopPropagation()
+                                                    this.setState({
+                                                        draggingFiles: false
+                                                    })
+                                                }}>Cancelar</a>
+                                        </small>
+                                    </p>
+                                </div>
+                            ) : (
+                                <div>
+                                    <span>Hacé click o arrastrá archivos</span>
+                                    <ul>
+                                        <li>.docx</li>
+                                        <li>.pdf</li>
+                                        <li>.jpg</li>
+                                    </ul>
+                                </div>
+                            )}
                         </Dropzone>
                     </div>
+
                     <div className="content ui mini transparent input">
                         <input
                             type="number"
@@ -312,6 +380,7 @@ class Composer extends React.Component {
                             onChange={this.handleMaxSize}
                         />
                     </div>
+
                     <button
                         className="ui primary button"
                         onClick={this.genPDF}
@@ -325,6 +394,7 @@ class Composer extends React.Component {
                     handleRemove={this.handleImageRemove}
                     updateState={this.updateState}
                 />
+
             </div>
         );
     }
@@ -335,7 +405,7 @@ const mapStateToComposerProps = (state) => {
         loading: state.fetchCount > 0
     }
 }
-import { incFetchCount, decFetchCount } from '../actions';
+import { incFetchCount, decFetchCount, onNodeAdd } from '../actions';
 const mapDispatchToComposerProps = (dispatch) => {
     return {
         onMaxSizeChange: (maxSize) => {
@@ -345,7 +415,8 @@ const mapDispatchToComposerProps = (dispatch) => {
             })
         },
         onFetchStart: () => dispatch(incFetchCount()),
-        onFetchEnd: () => dispatch(decFetchCount())
+        onFetchEnd: () => dispatch(decFetchCount()),
+        onNodeAdd: (parentNodeId, nodeId, nodeData) => dispatch(onNodeAdd(parentNodeId, nodeId, nodeData))
     }
 }
 const VisibleComposer = connect(
