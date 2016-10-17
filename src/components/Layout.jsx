@@ -1,25 +1,22 @@
 import React from 'react';
 import Header from './Header.jsx';
+import Sidebar from './Sidebar.jsx';
 import PdfComposer from './PdfComposer.jsx';
-
-const Footer = function() {
-    return (
-        <div className="ui inverse footer">
-            <h1>footer!</h1>
-        </div>
-    );
-}
 
 const Layout = function() {
     return (
         <div>
             <Header />
-            <div className="ui main text container">
-                <PdfComposer />
+            <div className="ui stackable column grid">
+                <div className="six wide column sidebar">
+                    <Sidebar />
+                </div>
+                <div className="ten wide column">
+                    <PdfComposer />
+                </div>
             </div>
         </div>
     );
 }
-
 
 export default Layout;

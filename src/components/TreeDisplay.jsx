@@ -1,12 +1,7 @@
 import React from 'react';
-
-
-/*
-    Simple Drag & Drop
-*/
-
-
 import { DragSource } from 'react-dnd';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 const style1 = {
   border: '1px dashed gray',
@@ -64,7 +59,7 @@ const style2 = {
   width: '12rem',
   marginRight: '1.5rem',
   marginBottom: '1.5rem',
-  color: 'white',
+  color: '#aaa',
   padding: '1rem',
   textAlign: 'center',
   fontSize: '1rem',
@@ -88,19 +83,22 @@ class Dustbin extends React.Component {
     const { canDrop, isOver, connectDropTarget } = this.props;
     const isActive = canDrop && isOver;
 
-    let backgroundColor = '#222';
+    let backgroundColor = '#fafafa';
     if (isActive) {
-      backgroundColor = 'darkgreen';
+      backgroundColor = 'darkred';
     } else if (canDrop) {
       backgroundColor = 'darkkhaki';
     }
 
     return connectDropTarget(
       <div style={{ ...style2, backgroundColor }}>
-        {isActive ?
-          'Release to drop' :
-          'Drag a box here'
-        }
+          <div>
+              {isActive ?
+                  'Solta para borrar' :
+                  'Borrar archivos'
+              }
+              <i className="trash icon"></i>
+          </div>
       </div>
     );
   }
@@ -110,11 +108,7 @@ class Dustbin extends React.Component {
 
 
 
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-/*
-@DragDropContext(HTML5Backend)
-*/
+
 class Container extends React.Component {
   render() {
     return (
@@ -201,14 +195,6 @@ class TreeDisplay extends React.Component {
     render() {
         return (
             <div className="tree">
-                <h1>I U S I S</h1>
-                <div className="ui divider"></div>
-                <div className="fluid ui buttons">
-                    <button className="ui teal button"><i className="download icon"></i> Generar PDF</button>
-                    <button className="ui red cancel button"><i className="trash icon"></i>Limpiar</button>
-                    <button className="ui button"><i className="setting icon"></i></button>
-                </div>
-                <div className="ui divider"></div>
                 <SortableTree />
                 <Container />
             </div>

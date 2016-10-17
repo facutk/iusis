@@ -329,14 +329,9 @@ class Composer extends React.Component {
 
         return (
             <div className="pdf-composer">
-                { (process.env.NODE_ENV != 'production')? <TreeDisplay /> : null }
-
                 <div className="ui centered card">
                     <div className="ui">
                         <Dropzone
-                            onDragOver={(e) => {
-                                console.log(e)
-                            }}
                             className={'dropzone ' + (this.state.draggingFiles ? 'fullpage': '')}
                             onDrop={this.onFileDrop}>
 
@@ -359,12 +354,13 @@ class Composer extends React.Component {
                                 </div>
                             ) : (
                                 <div>
-                                    <span>Hacé click o arrastrá archivos</span>
+                                    <p><span>Arrastrá archivos</span></p>
                                     <ul>
-                                        <li>.docx</li>
-                                        <li>.pdf</li>
-                                        <li>.jpg</li>
+                                        <li><i className="file word outline icon"></i> Word</li>
+                                        <li><i className="file pdf outline icon"></i> Pdf</li>
+                                        <li><i className="file image outline icon"></i> Imagenes</li>
                                     </ul>
+                                    <p>O <a href="#">buscalos</a> en tu PC</p>
                                 </div>
                             )}
                         </Dropzone>

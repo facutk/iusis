@@ -24,7 +24,7 @@ const defaultTree2 = {
 };
 
 
-const tree = (state = defaultTree2, action) => {
+const tree = (state = defaultTree, action) => {
     switch (action.type) {
         case 'TOGGLE_ACTIVE_NODE':
             return Object.keys(state).reduce( (reducedTree, nodeId) => {
