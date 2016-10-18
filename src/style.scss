@@ -9,9 +9,7 @@ body {
     margin-bottom: 1em;
 }
 
-.sidebar {
-    max-width: 320px;
-    padding: 5px;
+.ui.sidebar.visible {
     /*
     color: white;
     position: fixed;
@@ -24,6 +22,11 @@ body {
     background-color: #21252B;
     */
 }
+
+.ui.sidebar.visible ~ .pusher {
+    width: calc(100% - 260px);
+}
+
 
 .content {
     margin-left: 320px;
@@ -39,7 +42,7 @@ body {
         font-size: 1.5em;
         border: 5px dashed #ccc;
         cursor: pointer;
-        
+
         ul {
             list-style: none;
         }
@@ -54,7 +57,7 @@ body {
         right: 0;
         overflow-x: hidden;
         overflow-y: auto;
-        z-index: 2;
+        z-index: 9999;
     }
 
     .content > span {

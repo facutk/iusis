@@ -8,6 +8,7 @@ const Header = ({header, onDoubleClick}) => {
             className="ui header nav"
             onDoubleClick={onDoubleClick}
         >
+            <button className="ui icon button"><i className="sidebar icon"></i></button>
             <h1>{header}</h1>
         </div>
     );
