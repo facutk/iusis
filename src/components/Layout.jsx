@@ -70,4 +70,54 @@ const Layout2 = function() {
     );
 }
 
-export default Layout2;
+
+const Layout3 = function() {
+    //<div className="ui dimmer active"></div>
+    return (
+        <div>
+            <div style={{
+                    backgroundColor: 'red',
+                    color: 'white',
+                    display: 'block',
+                    marginBottom: 4,
+                    padding: 5,
+                    minHeight: 100
+                }}>
+                header
+            </div>
+
+            <div style={{
+                display: '-webkit-flex',
+                display: 'flex',
+                flexFlow: 'row',
+                minHeight: 600
+            }}>
+                <div style={{
+                        backgroundColor: 'green',
+                        color: 'white',
+                        margin: 4,
+                        padding: 5,
+                        minWidth: 312,
+                        flexBasis: 'auto',
+                        flexGrow: 1,
+                        order: 1
+                    }}>
+                    sidebar
+                </div>
+
+                <div style={{
+                        backgroundColor: 'blue',
+                        color: 'white',
+                        margin: 4,
+                        padding: 5,
+                        flexGrow: 3,
+                        order: 2
+                    }}>
+                    content
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Layout3;

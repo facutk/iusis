@@ -3,12 +3,12 @@ import {connect} from 'react-redux';
 import { setHeader } from '../actions';
 
 const Header = ({header, onDoubleClick}) => {
+    //<button className="ui icon button"><i className="sidebar icon"></i></button>
     return (
         <div
             className="ui header nav"
             onDoubleClick={onDoubleClick}
         >
-            <button className="ui icon button"><i className="sidebar icon"></i></button>
             <h1>{header}</h1>
         </div>
     );
