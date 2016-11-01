@@ -1,1 +1,0 @@
-pandoc --template default.latex -s test.docx -o test.pdf
