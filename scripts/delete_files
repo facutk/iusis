@@ -1,2 +1,6 @@
 #!/bin/bash
-rm /var/www/html/*
+file="/var/www/html/index.html"
+
+if [ -f $file ] ; then
+    rm $file
+fi
